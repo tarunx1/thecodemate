@@ -1,0 +1,35 @@
+/* The ONLY place brand hex values are declared. Components use these variables. */
+:root {
+  /* Brand palette (five approved colours) */
+  --ink: #0B0B0B;
+  --accent: #FF7A00;
+  --surface: #2A2A2A;
+  --muted: #BDBDBD;
+  --paper: #F8F8F8;
+
+  /* Alpha variants of approved colours */
+  --ink-08: rgba(11, 11, 11, 0.08);
+  --ink-12: rgba(11, 11, 11, 0.12);
+  --ink-20: rgba(11, 11, 11, 0.2);
+  --ink-55: rgba(11, 11, 11, 0.55);
+  --ink-78: rgba(11, 11, 11, 0.78);
+  --surface-72: rgba(42, 42, 42, 0.72);
+  --paper-14: rgba(248, 248, 248, 0.14);
+  --paper-35: rgba(248, 248, 248, 0.35);
+  --paper-82: rgba(248, 248, 248, 0.82);
+  --accent-12: rgba(255, 122, 0, 0.12);
+  --line: rgba(189, 189, 189, 0.28);
+
+  /* Typography (font variables are injected by next/font in app/layout.tsx) */
+  --font-heading: var(--font-sora), var(--font-inter), system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+  --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+
+  --radius: 10px;
+  --content: 1200px;
+  --gutter: clamp(16px, 4vw, 32px);
+}

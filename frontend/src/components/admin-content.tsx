@@ -1,0 +1,5 @@
+import Link from 'next/link';
+import type { ItemSummary } from '@/lib/types';
+import { EmptyState, Status } from './ui';
+export function MetricCard({ label, count }: { label: string; count: number }) { return <div className="metric-card"><span>{label}</span><strong>{count}</strong></div>; }
+export function ContentTable({ items, title }: { items: ItemSummary[]; title?: string }) { return <section className="table-section">{title && <h2>{title}</h2>}{items.length ? <div className="table-wrap"><table><thead><tr><th>Title</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>{items.map(item => { const rev = item.draft || item.content; return <tr key={item.id}><td><strong>{rev?.title || item.slug}</strong><small>/{item.kind}s/{item.slug}</small></td><td><Status item={item}/></td><td>{new Date(item.updated_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td><td><Link href={`/admin/${item.kind}s/${item.id}`} className="text-link">Edit →</Link></td></tr>; })}</tbody></table></div> : <EmptyState title={`No ${title?.toLowerCase() || 'content'} yet`} description="Create a draft to get started."/>}</section>; }

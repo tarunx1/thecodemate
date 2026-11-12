@@ -1,0 +1,1 @@
+"""TheCodeMate editorial platform."""

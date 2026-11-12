@@ -1,0 +1,17 @@
+export type Kind = 'topic' | 'project';
+export type Media = { id: number; url: string; alt: string; width: number; height: number };
+export type RevisionSummary = { id: number; title: string; summary: string; category: string;
+  tags: string; cover: Media | null; featured: boolean; sample: boolean; created_at: string };
+export type Revision = RevisionSummary & { body: string; body_html: string; steps: string;
+  demo_url: string; repo_url: string; video_url: string };
+export type ItemSummary = { id: number; kind: Kind; slug: string; updated_at: string; published: boolean;
+  content: RevisionSummary | null; draft?: RevisionSummary | null; draft_revision_id?: number | null };
+export type Item = Omit<ItemSummary, 'content' | 'draft'> & { content: Revision | null;
+  draft?: Revision | null; editor_state?: string };
+export type SiteSettings = { eyebrow: string; headline: string; hero_line1: string; hero_line2: string;
+  hero_highlight: string; hero_description: string; instagram_url: string; footer_note: string;
+  hero_effect: HeroEffect };
+export type HeroEffect = 'liquid-metal';
+export type ListResult = { items: ItemSummary[]; categories: string[]; q?: string; category?: string;
+  total: number; page: number; page_size: number; has_next: boolean };
+export type DashboardData = { metrics: Record<string, number>; topics: ItemSummary[]; projects: ItemSummary[] };

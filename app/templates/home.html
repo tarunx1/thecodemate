@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero container">
+  <div class="hero-copy">
+    <div class="eyebrow"><span class="eyebrow-line"></span>{{ site.eyebrow }}</div>
+    <h1>{{ site.hero_line1 }}<br /><span class="line-contrast">{{ site.hero_line2 }} <em>{{ site.hero_highlight }}</em></span></h1>
+    <p class="hero-lead">{{ site.hero_description }}</p>
+    <div class="hero-actions"><a href="/topics" class="button button-primary">Explore the concepts <span aria-hidden="true">↗</span></a><a href="/projects" class="button button-ghost">See what we've built <span aria-hidden="true">↗</span></a></div>
+    <div class="hero-footnote"><span class="pulse-dot"></span>AN OPEN STUDIO FOR LEARNING & BUILDING <span class="hero-footnote-line"></span> EST. 2026</div>
+  </div>
+  <div class="hero-visual" aria-label="Abstract visual explanation showing input, processing and output">
+    <div class="visual-grid" aria-hidden="true"></div>
+    <div class="visual-blob" aria-hidden="true"></div>
+    <div class="floating-label floating-label--top" aria-hidden="true"><span class="mini-dot"></span> EXPLAINING THE INVISIBLE</div>
+    <div class="visual-frame">
+      <div class="visual-frame-head"><span>VISUAL THINKING / 001</span><span>● ● ●</span></div>
+      <div class="visual-core"><div class="visual-center-grid" aria-hidden="true"></div><div class="visual-ring ring-outer"></div><div class="visual-ring ring-inner"></div><span class="visual-initial">&lt;<b>/</b>&gt;</span><span class="visual-particle p1"></span><span class="visual-particle p2"></span><span class="visual-particle p3"></span></div>
+      <div class="visual-flow"><span>INPUT</span><i></i><span class="flow-active">PROCESS</span><i></i><span>OUTPUT</span></div>
+    </div>
+    <div class="floating-label floating-label--bottom" aria-hidden="true"><span>01</span><span>LOGIC, MADE VISUAL.</span><span>↗</span></div>
+  </div>
+</section>
+<div class="ticker" aria-hidden="true"><div class="ticker-track"><span>DECONSTRUCT</span><b>✳</b><span>VISUALIZE</span><b>✳</b><span>UNDERSTAND</span><b>✳</b><span>BUILD</span><b>✳</b><span>DECONSTRUCT</span><b>✳</b><span>VISUALIZE</span><b>✳</b><span>UNDERSTAND</span><b>✳</b><span>BUILD</span></div></div>
+<section class="section container" id="topics">
+  <div class="section-heading reveal" data-reveal><div><div class="section-kicker"><span>01 / EXPLORE</span><span class="kicker-rule"></span> THE KNOWLEDGE BASE</div><h2>Learn by <i>seeing.</i></h2><p>Less theory overload. More moments where everything clicks.</p></div><a class="text-link" href="/topics">View all topics <span aria-hidden="true">↗</span></a></div>
+  {% if topics %}<div class="entry-grid">{% for item, rev in topics %}{% include 'card.html' %}{% endfor %}</div>
+  {% else %}<div class="empty-feature"><span>01 / COMING SOON</span><h3>The first concepts are being prepared.</h3><p>New explainers will appear here as soon as they're published.</p><a href="/admin/login">Open studio ↗</a></div>{% endif %}
+</section>
+<section class="manifesto container reveal" data-reveal>
+  <div class="manifesto-left"><span>OUR APPROACH</span><div class="manifesto-decoration" aria-hidden="true"><span></span><span></span><span></span></div></div>
+  <div class="manifesto-text">If you can <em>see</em> how something works, you can understand it. <span>That's why we turn complexity into clarity.</span></div>
+</section>
+<section class="section container projects-section" id="projects">
+  <div class="section-heading reveal" data-reveal><div><div class="section-kicker"><span>02 / THE LAB</span><span class="kicker-rule"></span> REAL WORK, REAL IDEAS</div><h2>Beyond the <i>explainers.</i></h2><p>Things we've prototyped, engineered, and learned while building.</p></div><a class="text-link" href="/projects">Explore all projects <span aria-hidden="true">↗</span></a></div>
+  {% if projects %}<div class="entry-grid entry-grid-projects">{% for item, rev in projects %}{% include 'card.html' %}{% endfor %}</div>
+  {% else %}<div class="empty-feature"><span>02 / THE LAB</span><h3>Project case studies are being curated.</h3><p>We will share selected builds here with links and technical write-ups.</p></div>{% endif %}
+</section>
+<section class="outro-section container reveal" data-reveal><div class="outro-glow" aria-hidden="true"></div><div class="section-kicker">03 / STAY CURIOUS</div><h2>Good questions lead<br />to <em>great builds.</em></h2><p>New concepts, code, experiments, and the thinking behind them.</p><a class="button button-primary" href="{{ site.instagram_url }}" target="_blank" rel="noopener noreferrer">Follow @thecodemate <span aria-hidden="true">↗</span></a><span class="outro-signature" aria-hidden="true">&lt;/&gt;</span></section>
+{% endblock %}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0B0B0B" />
+  <title>{{ page_title }}</title>
+  <meta name="description" content="{{ description }}" />
+  <meta name="robots" content="{{ 'index,follow' if indexable else 'noindex,nofollow' }}" />
+  <link rel="canonical" href="{{ canonical }}" />
+  <meta property="og:title" content="{{ page_title }}" />
+  <meta property="og:description" content="{{ description }}" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static',path='icon.svg') }}" />
+  <link rel="stylesheet" href="{{ url_for('static',path='styles.css') }}" />
+  <script src="{{ url_for('static',path='app.js') }}" defer></script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="ambient ambient--one" aria-hidden="true"></div>
+  <div class="ambient ambient--two" aria-hidden="true"></div>
+  {% if preview %}<div class="preview-banner">PREVIEW MODE — This draft is not public. <a href="/admin/edit/{{ item.id }}">Return to editor</a></div>{% endif %}
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="/" class="brand" aria-label="thecodemate home">
+        <span class="brand-mark" aria-hidden="true"><span>&lt;</span><b>/</b><span>&gt;</span></span>
+        <span>thecode<strong>mate<span class="brand-dot">.</span></strong></span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-navigation" aria-label="Open navigation" data-nav-toggle><span></span><span></span></button>
+      <nav id="main-navigation" class="main-nav" aria-label="Main navigation">
+        <a href="/" class="{{ 'is-active' if active == 'home' else '' }}">Home</a>
+        <a href="/topics" class="{{ 'is-active' if active == 'topics' else '' }}">Explore topics</a>
+        <a href="/projects" class="{{ 'is-active' if active == 'projects' else '' }}">Our projects</a>
+        {% if admin_session %}<a href="/admin">Dashboard</a>{% endif %}
+        <a class="nav-cta" href="{{ site.instagram_url }}" target="_blank" rel="noopener noreferrer">Follow the journey <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">{% block content %}{% endblock %}</main>
+  <footer class="site-footer">
+    <div class="container footer-main">
+      <div>
+        <a href="/" class="brand footer-brand"><span class="brand-mark" aria-hidden="true"><span>&lt;</span><b>/</b><span>&gt;</span></span><span>thecode<strong>mate<span class="brand-dot">.</span></strong></span></a>
+        <p>{{ site.footer_note }}</p>
+      </div>
+      <div class="footer-links"><a href="/topics">Topics</a><a href="/projects">Projects</a><a href="{{ site.instagram_url }}" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="/admin/login">Studio</a></div>
+    </div>
+    <div class="container footer-bottom"><span>© {{ 2026 }} thecodemate. Built to make ideas click.</span><span>DESIGN · DEVELOP · DEMYSTIFY</span></div>
+  </footer>
+</body>
+</html>
