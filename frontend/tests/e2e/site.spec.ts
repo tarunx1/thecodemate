@@ -257,6 +257,40 @@ test.describe('admin workspace', () => {
     const hiddenResponse = await page.request.get('/topics/disposable-browser-topic');
     expect(hiddenResponse.status()).toBe(404);
   });
+
+  test('owner changes the password from settings and signs in with it', async ({ page }) => {
+    const temporary = 'Temporary-E2E-owner-2027!';
+    const signIn = async (secret: string) => {
+      await page.goto('/admin/login');
+      await page.getByLabel('Email').fill(email!);
+      await page.getByLabel('Password').fill(secret);
+      await page.getByRole('button', { name: 'Sign in' }).click();
+    };
+    const change = async (current: string, next: string, confirm = next) => {
+      await page.goto('/admin/settings');
+      await page.getByLabel('Current password').fill(current);
+      await page.locator('input[name="new_password"]').fill(next);
+      await page.getByLabel('Confirm new password').fill(confirm);
+      await page.getByRole('button', { name: 'Change password' }).click();
+    };
+    await signIn(password!);
+    await expect(page).toHaveURL(/\/admin$/);
+    await change(password!, temporary, temporary + 'x');
+    await expect(page.getByText('The new passwords do not match.')).toBeVisible();
+    await change('Wrong-current-password-1!', temporary);
+    await expect(page.getByText('Current password is incorrect')).toBeVisible();
+    await change(password!, temporary);
+    await expect(page.getByText('Password changed.')).toBeVisible();
+    await page.getByRole('button', { name: 'Logout' }).click();
+    await expect(page).toHaveURL(/\/admin\/login$/);
+    await signIn(password!);
+    await expect(page.getByRole('alert')).toBeVisible();
+    await signIn(temporary);
+    await expect(page).toHaveURL(/\/admin$/);
+    // Restore the disposable owner's password for any later run against this stack.
+    await change(temporary, password!);
+    await expect(page.getByText('Password changed.')).toBeVisible();
+  });
 });
 
 

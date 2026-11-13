@@ -293,6 +293,19 @@
     "error": {
       "title": "Workspace unavailable",
       "description": "The content service could not load this page."
+    },
+    "account": {
+      "title": "Password",
+      "description": "Change the password for this owner account. Other signed-in sessions are signed out.",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "hint": "At least 12 characters with mixed character types.",
+      "save": "Change password",
+      "saving": "Changing…",
+      "saved": "Password changed. Use the new password next time you sign in.",
+      "mismatch": "The new passwords do not match.",
+      "error": "Could not change the password."
     }
   },
   "shared": {

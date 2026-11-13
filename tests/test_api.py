@@ -147,3 +147,30 @@ def test_upload_limit_and_failed_write_remove_temporary_media(signed_in, tmp_pat
                            headers={'x-csrf-token': csrf})
     assert response.status_code == 422
     assert list(main.settings.media_dir.glob('*.webp')) == []
+
+
+def test_owner_can_change_password_with_negative_cases(signed_in):
+    client = signed_in
+    csrf = client.cookies['tc_admin_csrf']
+    old, new = 'test-secret-for-owner-2026!', 'Another-owner-secret-2027!'
+    good = {'current_password': old, 'new_password': new, 'confirm_password': new}
+    headers = {'x-csrf-token': csrf}
+    assert client.post('/api/admin/password', data=good).status_code == 403
+    assert client.post('/api/admin/password', data={**good, 'current_password': 'wrong-password-123!'}, headers=headers).status_code == 400
+    assert client.post('/api/admin/password', data={**good, 'confirm_password': new + 'x'}, headers=headers).status_code == 422
+    assert client.post('/api/admin/password', data={**good, 'new_password': 'short1!', 'confirm_password': 'short1!'}, headers=headers).status_code == 422
+    assert client.post('/api/admin/password', data={**good, 'new_password': old, 'confirm_password': old}, headers=headers).status_code == 422
+    response = client.post('/api/admin/password', data=good, headers=headers)
+    assert response.status_code == 200, response.text
+    # The current session survives; the old password no longer signs in and the new one does.
+    assert client.get('/api/admin/dashboard').status_code == 200
+    def sign_in(password):
+        token = client.get('/api/admin/login-token').json()['csrf']
+        return client.post('/api/admin/login', data={'csrf': token, 'email': 'owner@example.org', 'password': password}).status_code
+    assert sign_in(old) == 401
+    assert sign_in(new) == 200
+
+
+def test_password_change_requires_a_session(client):
+    assert client.post('/api/admin/password', data={'current_password': 'a', 'new_password': 'b', 'confirm_password': 'b'}, headers={'x-csrf-token': 'x'}).status_code == 401
+

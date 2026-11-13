@@ -365,6 +365,8 @@ td small { display: block; font-size: 12px; color: var(--surface-72); margin-top
 .current-cover { width: 240px; height: 130px; object-fit: cover; border-radius: 6px; }
 .settings-form { max-width: 800px; display: flex; flex-direction: column; gap: 18px; }
 .settings-form > .button { align-self: start; }
+.password-form { margin-top: var(--space-7); }
+.password-form .card p { margin: 0; color: var(--surface); font-size: 14px; }
 .media-upload { max-width: 850px; margin-bottom: 42px; }
 .media-upload .card { display: flex; flex-direction: column; gap: 16px; }
 .media-upload .button { align-self: start; }

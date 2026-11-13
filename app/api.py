@@ -14,8 +14,8 @@ from .content import (ContentConflictError, assert_editor_state, content_state_t
                       create_item, edit_item, get_revision, parse_slug, public_items,
                       publish_item, site_settings, unpublish_item, update_settings)
 from .db import db_session
-from .models import AdminUser, AuditLog, ContentItem, ContentRevision, Media
-from .security import (COOKIE, CSRF_COOKIE, LOGIN_CSRF_COOKIE, issue_session,
+from .models import AdminSession, AdminUser, AuditLog, ContentItem, ContentRevision, Media
+from .security import (COOKIE, CSRF_COOKIE, LOGIN_CSRF_COOKIE, issue_session, password_policy, ph,
                        require_admin, require_csrf, verify_password)
 
 router = APIRouter(prefix="/api")
@@ -162,6 +162,33 @@ def logout(request: Request, db: Session = Depends(db_session)):
     response.delete_cookie(COOKIE)
     response.delete_cookie(CSRF_COOKIE)
     return response
+
+
+@router.post("/admin/password")
+async def change_password(request: Request, db: Session = Depends(db_session)):
+    """Owner changes their own password. Needs the current password; other sessions are revoked."""
+    from .main import login_allowed
+    active = require_csrf(db, request, request.headers.get("x-csrf-token", ""))
+    data = await request.form()
+    current = str(data.get("current_password", ""))
+    new = str(data.get("new_password", ""))
+    if not login_allowed(f"password:{active.admin_id}"):
+        raise HTTPException(429, "Too many attempts. Try later.")
+    if not verify_password(active.admin, current):
+        raise HTTPException(400, "Current password is incorrect")
+    if new != str(data.get("confirm_password", "")):
+        raise HTTPException(422, "New passwords do not match")
+    if new == current:
+        raise HTTPException(422, "New password must differ from the current password")
+    try:
+        password_policy(new)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    active.admin.password_hash = ph.hash(new)
+    db.query(AdminSession).filter(AdminSession.admin_id == active.admin_id, AdminSession.id != active.id).delete(synchronize_session=False)
+    db.add(AuditLog(admin_id=active.admin_id, action="admin.password_change"))
+    db.commit()
+    return {"ok": True}
 
 
 @router.get("/admin/dashboard")
