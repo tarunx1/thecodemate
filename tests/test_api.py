@@ -61,29 +61,30 @@ def test_unpublished_media_is_private(signed_in):
     assert client.get(url).status_code == 404
 
 
-def test_hero_effect_setting_is_allowlisted(signed_in):
+def test_retired_settings_are_not_exposed_or_overwritten(signed_in):
     from app.db import db_session
     from app.main import app
     from app.models import SiteSetting
     client = signed_in
     csrf = client.cookies['tc_admin_csrf']
     settings = client.get('/api/admin/settings').json()
-    assert settings['hero_effect'] == 'liquid-metal'
-    # Retired or arbitrary effects are rejected and the stored choice is unchanged.
-    for bad in ('aurora', '<script>'):
-        settings['hero_effect'] = bad
-        assert client.post('/api/admin/settings', data=settings, headers={'x-csrf-token': csrf}).status_code == 422
-    assert client.get('/api/public/settings').json()['hero_effect'] == 'liquid-metal'
-    # A form that omits the field (current settings page, legacy Jinja page) keeps the stored choice.
-    del settings['hero_effect']
-    assert client.post('/api/admin/settings', data=settings, headers={'x-csrf-token': csrf}).status_code == 200
-    assert client.get('/api/public/settings').json()['hero_effect'] == 'liquid-metal'
-    # A stale stored value from a retired effect is served as the default.
+    assert 'hero_effect' not in settings
+    assert 'headline' not in settings
     db = next(app.dependency_overrides[db_session]())  # the isolated test database
-    db.get(SiteSetting, 'hero_effect').value = 'aurora'
+    db.add(SiteSetting(key='hero_effect', value='aurora'))
+    db.add(SiteSetting(key='headline', value='Old headline'))
     db.commit()
     db.close()
-    assert client.get('/api/public/home').json()['settings']['hero_effect'] == 'liquid-metal'
+    assert client.post('/api/admin/settings', data={**settings, 'hero_effect': '<script>', 'headline': 'new'}, headers={'x-csrf-token': csrf}).status_code == 200
+    for path in ('/api/admin/settings', '/api/public/settings', '/api/public/home'):
+        payload = client.get(path).json()
+        active = payload['settings'] if path.endswith('/home') else payload
+        assert 'hero_effect' not in active
+        assert 'headline' not in active
+    db = next(app.dependency_overrides[db_session]())
+    assert db.get(SiteSetting, 'hero_effect').value == 'aurora'
+    assert db.get(SiteSetting, 'headline').value == 'Old headline'
+    db.close()
 
 
 def test_stale_editor_cannot_save_or_publish_unreviewed_changes(signed_in):

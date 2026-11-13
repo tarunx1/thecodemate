@@ -105,7 +105,8 @@ test.describe('public pages', () => {
       await expect.poll(() => card.locator('.content-art img').evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
       await expect(card).toHaveCSS('border-top-width', '0px');
       await expect(card.locator('.card-copy')).toHaveCSS('border-top-width', '0px');
-      expect(await card.locator('.card-copy').evaluate((element) => getComputedStyle(element, '::before').backdropFilter)).toBe('blur(12px)');
+      await expect(card).toHaveCSS('background-color', 'rgb(248, 248, 248)');
+      await expect(card.locator('.card-copy h3')).toHaveCSS('color', 'rgb(11, 11, 11)');
       await expect(card.locator('.card-copy h3')).toBeVisible();
     }
     expect(await page.evaluate(() => getComputedStyle(document.querySelector('.public-theme')!).backgroundColor)).toBe('rgb(11, 11, 11)');
@@ -255,4 +256,25 @@ test.describe('admin workspace', () => {
     const hiddenResponse = await page.request.get('/topics/disposable-browser-topic');
     expect(hiddenResponse.status()).toBe(404);
   });
+});
+
+
+test('featured cards stay in one row and learning accordion works', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  const rail = page.locator('.card-track').first();
+  await rail.scrollIntoViewIfNeeded();
+  const positions = await rail.locator('.content-card').evaluateAll(cards => cards.map(card => ({ top: card.getBoundingClientRect().top, height: card.getBoundingClientRect().height })));
+  expect(positions.length).toBeGreaterThan(1);
+  positions.forEach(position => { expect(position.top).toBeCloseTo(positions[0].top, 0); expect(position.height).toBeCloseTo(positions[0].height, 0); });
+  await page.locator('.rail-controls').first().locator('button').last().click();
+  await expect.poll(() => rail.evaluate(node => node.scrollLeft)).toBeGreaterThan(0);
+  const items = page.locator('.learning-accordion .learning-item');
+  await items.nth(1).getByRole('button').click();
+  await expect(items.nth(1)).toHaveAttribute('data-open', 'true');
+  await expect(items.first()).toHaveAttribute('data-open', 'false');
+  await items.nth(1).getByRole('button').click();
+  await expect(items.nth(1)).toHaveAttribute('data-open', 'false');
+  expect(await rail.evaluate(node => node.getAnimations({ subtree: true }).length)).toBe(0);
 });

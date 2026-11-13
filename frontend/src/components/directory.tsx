@@ -1,6 +1,7 @@
 import { ContentCard, PublicLayout } from './public';
 import { EmptyState, SearchInput, Select, Button, Pagination } from './ui';
 import type { ListResult } from '@/lib/types';
+import { COPY, formatCopy } from '@/lib/copy';
 
 export function Directory({ kind, data }: { kind: 'topics' | 'projects'; data: ListResult }) {
   const pageHref = (page: number) => {
@@ -12,21 +13,21 @@ export function Directory({ kind, data }: { kind: 'topics' | 'projects'; data: L
   };
   return <PublicLayout><main id="main" className="container directory">
     <div className="directory-head">
-      <span className="mono-label">THECODEMATE / {kind.toUpperCase()}</span>
-      <h1>{kind === 'topics' ? 'Ideas worth understanding.' : 'Work worth exploring.'}</h1>
-      <p>{kind === 'topics' ? 'Visual explainers for the systems and concepts behind technology.' : 'Selected projects, built with care and explained in detail.'}</p>
+      <span className="mono-label">{formatCopy(COPY.public.directory.directoryLabel, { kind: kind.toUpperCase() })}</span>
+      <h1>{kind === 'topics' ? COPY.public.directory.topicsTitle : COPY.public.directory.projectsTitle}</h1>
+      <p>{kind === 'topics' ? COPY.public.directory.topicsDescription : COPY.public.directory.projectsDescription}</p>
     </div>
     <form className="filters" action={`/${kind}`}>
-      <SearchInput name="q" aria-label={`Search ${kind}`} placeholder={`Search ${kind}…`} defaultValue={data.q || ''}/>
-      <Select name="category" aria-label="Filter by category" defaultValue={data.category || ''}>
-        <option value="">All categories</option>
+      <SearchInput name="q" aria-label={formatCopy(COPY.public.directory.search, { kind })} placeholder={formatCopy(COPY.public.directory.searchPlaceholder, { kind })} defaultValue={data.q || ''}/>
+      <Select name="category" aria-label={COPY.public.directory.filterCategory} defaultValue={data.category || ''}>
+        <option value="">{COPY.common.allCategories}</option>
         {data.categories.map(c => <option key={c} value={c}>{c}</option>)}
       </Select>
-      <Button type="submit">Apply filters</Button>
+      <Button type="submit">{COPY.public.directory.applyFilters}</Button>
     </form>
-    <p className="result-count">{data.total} {data.total === 1 ? kind.slice(0, -1) : kind}</p>
+    <p className="result-count">{formatCopy(COPY.public.directory.resultCount, { count: data.total, kind: data.total === 1 ? kind.slice(0, -1) : kind })}</p>
     {data.items.length ? <div className="content-grid directory-grid">{data.items.map(item => <ContentCard key={item.id} item={item}/>)}</div>
-      : <EmptyState title="No matches yet" description="Try another search or category."/>}
+      : <EmptyState title={COPY.public.directory.noMatches} description={COPY.public.directory.noMatchesHelp}/>}
     <Pagination page={data.page} total={data.total} pageSize={data.page_size} href={pageHref}/>
   </main></PublicLayout>;
 }

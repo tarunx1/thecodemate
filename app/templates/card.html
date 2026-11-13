@@ -1,4 +1,4 @@
-<a class="entry-card reveal" data-reveal href="/{{ item.kind }}s/{{ item.slug }}" aria-label="Explore {{ rev.title }}">
+<a class="entry-card reveal" data-reveal href="/{{ item.kind }}s/{{ item.slug }}" aria-label="{{ copy.legacy.card.explore }} {{ rev.title }}">
   <div class="entry-art entry-art--{{ 'topic' if item.kind == 'topic' else 'project' }}">
     {% if rev.cover %}<img src="/media/{{ rev.cover.key }}" alt="{{ rev.cover.alt }}" width="{{ rev.cover.width }}" height="{{ rev.cover.height }}" loading="lazy" />
     {% else %}
@@ -6,12 +6,12 @@
         <span class="entry-code">{{ '{' if item.kind == 'topic' else '&lt;' }}</span>
         <div class="entry-orbit entry-orbit--one"></div><div class="entry-orbit entry-orbit--two"></div>
         <span class="entry-visual-node entry-visual-node--a"></span><span class="entry-visual-node entry-visual-node--b"></span>
-        <span class="entry-glyph">{{ '01 / KNOW' if item.kind == 'topic' else '02 / BUILD' }}</span>
+        <span class="entry-glyph">{{ copy.legacy.card.topicGlyph if item.kind == 'topic' else copy.legacy.card.projectGlyph }}</span>
       </div>
     {% endif %}
     <span class="entry-art-corner" aria-hidden="true">↗</span>
   </div>
-  <div class="entry-meta"><span>{{ rev.category | upper }}</span><span>{{ 'PROJECT' if item.kind == 'project' else 'EXPLAINER' }}{% if rev.sample %} · SAMPLE{% endif %}</span></div>
+  <div class="entry-meta"><span>{{ rev.category | upper }}</span><span>{{ copy.legacy.card.project if item.kind == 'project' else copy.legacy.card.explainer }}{% if rev.sample %}{{ copy.legacy.card.sample }}{% endif %}</span></div>
   <h3>{{ rev.title }}</h3><p>{{ rev.summary }}</p>
-  <span class="entry-link">Explore {{ 'project' if item.kind == 'project' else 'topic' }} <span aria-hidden="true">↗</span></span>
+  <span class="entry-link">{{ copy.legacy.card.explore }} {{ copy.legacy.card.projectLower if item.kind == 'project' else copy.legacy.card.topicLower }} <span aria-hidden="true">↗</span></span>
 </a>

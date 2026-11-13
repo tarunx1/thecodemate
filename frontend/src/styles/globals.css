@@ -82,17 +82,17 @@ p { margin-top: 0; overflow-wrap: break-word; }
 
 /* ============================================================ public shell base layout */
 .public-theme { background: var(--paper); color: var(--ink); min-height: 100vh; overflow-x: clip; }
-.site-header { z-index: 30; width: min(var(--content), calc(100% - 2 * var(--gutter))); height: 76px; margin: var(--space-4) auto 0; border: 0; border-radius: 999px; backdrop-filter: blur(20px); box-shadow: 0 12px 32px var(--ink-12); }
+.site-header { z-index: 30; width: min(var(--content), calc(100% - 2 * var(--gutter))); max-width: calc(100% - 2 * var(--gutter)); height: 76px; margin: var(--space-4) auto 0; border: 0; border-radius: 999px; backdrop-filter: blur(20px); box-shadow: 0 12px 32px var(--ink-12); }
 .site-header-light { position: sticky; top: var(--space-4); background: var(--paper-82); color: var(--ink); }
-.site-header-overlay { --focus: var(--accent); position: absolute; top: var(--space-4); left: 50%; margin: 0; transform: translateX(-50%); color: var(--paper); background: var(--ink-55); }
+.site-header-overlay { --focus: var(--accent); position: absolute; top: var(--space-4); left: 50%; margin: 0; transform: translateX(-50%); color: var(--paper); background: var(--ink-55); width: min(var(--content), calc(100% - 2 * var(--gutter))); max-width: calc(100% - 2 * var(--gutter)); }
 /* Orange actions keep a dark hairline so they never dissolve into an orange body behind them. */
 .liquid-hero .button-primary, .site-header-overlay .button-primary { box-shadow: 0 0 0 1px rgba(11, 11, 11, 0.6); }
 .site-header-overlay .wordmark { text-shadow: 0 1px 14px rgba(11, 11, 11, 0.7), 0 0 2px rgba(11, 11, 11, 0.5); }
 .site-header .icon-button { border: 0; }
-.site-nav { height: 100%; display: flex; align-items: center; gap: var(--space-6); }
-.site-cta { min-height: 40px; }
-.public-menu { display: none; margin-left: auto; }
-.site-links { display: flex; align-items: center; margin-left: auto; }
+.site-nav { height: 100%; display: flex; align-items: center; gap: clamp(var(--space-3), 2vw, var(--space-6)); min-width: 0; }
+.site-cta { min-height: 40px; flex-shrink: 0; }
+.public-menu { display: none; margin-left: auto; flex-shrink: 0; }
+.site-links { display: flex; align-items: center; margin-left: auto; min-width: 0; }
 .aceternity-menu { display: flex; align-items: center; gap: var(--space-2); padding: 6px; border: 0; border-radius: 999px; background: transparent; color: inherit; }
 .aceternity-item { position: relative; }
 .aceternity-trigger { display: block; padding: 9px 15px; border-radius: 999px; font-size: 14px; font-weight: 650; line-height: 1.3; white-space: nowrap; }
@@ -263,21 +263,24 @@ p { margin-top: 0; overflow-wrap: break-word; }
 .public-theme .prose pre { background: var(--surface); }
 .public-theme .empty-state, .public-theme .error-state { border-color: var(--paper-14); color: var(--paper-82); }
 .public-theme .empty-state h3 { color: var(--paper); }
-.public-theme .content-card { position: relative; min-height: 560px; overflow: hidden; padding: 0; border: 0; border-radius: 18px; background: var(--surface); color: var(--paper); isolation: isolate; }
-.public-theme .content-card:hover { box-shadow: 0 20px 48px var(--ink-55); }
-.public-theme .content-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
-.public-theme .content-art { position: absolute; inset: 0; aspect-ratio: auto; border-radius: 0; background: var(--surface); }
+/* Editorial cards: reference-inspired light surfaces on the dark public site. */
+.public-theme .content-card { position: relative; display: flex; flex-direction: column; min-height: 570px; overflow: hidden; padding: 0 0 72px; border: 0; border-radius: 28px; background: var(--paper); color: var(--ink); isolation: isolate; box-shadow: 0 8px 28px var(--ink-12); }
+.public-theme .content-card:hover { box-shadow: 0 16px 40px var(--ink-20); }
+.public-theme .content-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+.public-theme .card-copy { position: relative; margin: 0; padding: 30px 28px 24px; border: 0; background: transparent; }
+.public-theme .card-copy::before, .public-theme .content-art::after { content: none; }
+.public-theme .content-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 16px; color: var(--surface); font-size: 11px; }
+.public-theme .content-card h3 { margin: 0 0 16px; color: var(--ink); font-size: clamp(24px, 2.1vw, 32px); line-height: 1.18; letter-spacing: -0.025em; text-wrap: pretty; }
+.public-theme .content-card p { margin: 0; color: var(--surface); font-size: 16px; line-height: 1.5; }
+.public-theme .content-art { position: relative; inset: auto; margin: auto 20px 0; height: 240px; flex-shrink: 0; aspect-ratio: auto; border-radius: 16px; overflow: hidden; background: var(--paper); }
 .public-theme .content-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.public-theme .content-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, var(--ink-55) 100%); }
-.public-theme .card-copy { position: relative; z-index: 1; margin: auto 0 0; padding: 44px 24px 24px; border: 0; border-radius: 0; background: transparent; }
-.public-theme .card-copy::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(180deg, transparent, var(--ink-78) 46%, var(--ink-78)); backdrop-filter: blur(12px); -webkit-mask-image: linear-gradient(180deg, transparent, var(--ink) 36%); mask-image: linear-gradient(180deg, transparent, var(--ink) 36%); }
-.public-theme .content-meta { margin: 0 0 14px; color: var(--paper-82); font-size: 12px; }
-.public-theme .content-card h3 { margin: 0 0 10px; color: var(--paper); font-size: clamp(24px, 2vw, 30px); line-height: 1.16; }
-.public-theme .content-card p { margin: 0 0 18px; color: var(--paper-82); font-size: 16px; line-height: 1.55; }
-.public-theme .card-arrow { display: inline-flex; margin: 0; color: var(--accent); }
-.public-theme .sample-label { z-index: 2; top: 18px; left: 18px; }
+.public-theme .card-arrow { position: absolute; right: 20px; bottom: 16px; display: grid; place-items: center; width: 40px; height: 40px; margin: 0; border-radius: 50%; background: var(--ink-08); color: var(--surface); transition: background-color .2s ease, color .2s ease; }
+.public-theme .content-card:hover .card-arrow { background: var(--accent); color: var(--ink); }
 .public-theme .badge-accent { color: var(--ink); }
-@media (max-width: 760px) {
+.public-theme .content-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+@media (max-width: 1024px) { .public-theme .content-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .public-theme .content-grid { grid-template-columns: minmax(0, 1fr); } .public-theme .card-copy { padding: 28px 24px 24px; } }
+@media (max-width: 768px) {
   .public-theme .content-card { min-height: 500px; }
   .public-theme .site-header { height: 70px; }
 }
@@ -367,7 +370,7 @@ td small { display: block; font-size: 12px; color: var(--surface-72); margin-top
   .publication-panel { position: static; order: -1; }
   .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .site-header { height: 64px; }
   .site-links, .site-cta { display: none; }
   .public-menu { display: inline-grid; }
@@ -412,3 +415,89 @@ td small { display: block; font-size: 12px; color: var(--surface-72); margin-top
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
   .button:hover { transform: none; }
 }
+
+/* Single-row featured rail and reference-style numbered learning panel. */
+.public-theme .feature-section .card-track { display: grid; grid-auto-flow: column; grid-auto-columns: min(440px, 84vw); grid-template-columns: none; align-items: stretch; overflow-x: auto; scroll-snap-type: x mandatory; gap: 24px; padding: 8px 4px 16px; scrollbar-width: none; }
+.card-track::-webkit-scrollbar { display: none; }
+.card-track > .card-motion { height: 100%; scroll-snap-align: start; }
+.card-track .content-card { height: 100%; }
+.rail-controls { display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px; }
+.rail-controls button { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--surface); color: var(--paper); }
+.rail-controls button:hover { background: var(--accent); color: var(--ink); }
+.public-theme .learning-section { display: block; padding-top: 72px; padding-bottom: 72px; }
+.public-theme .learning-intro { max-width: 760px; margin: 0 auto 40px; text-align: center; }
+.public-theme .learning-intro h2 { font-size: clamp(32px, 4vw, 48px); }
+.public-theme .learning-intro p { max-width: 60ch; margin-inline: auto; }
+
+/* ============================================================ frosted-glass cards + accordion (navbar look) */
+/* Soft brand-orange light behind the sections gives the glass something to blur. */
+.public-theme .feature-section, .public-theme .learning-section { position: relative; isolation: isolate; }
+.public-theme .feature-section::before, .public-theme .learning-section::before { content: ""; position: absolute; z-index: -1; pointer-events: none; width: min(720px, 90vw); aspect-ratio: 1; left: -8%; top: 22%; background: radial-gradient(closest-side, rgba(255, 122, 0, 0.34), rgba(255, 122, 0, 0)); }
+.public-theme .feature-section::after, .public-theme .learning-section::after { content: ""; position: absolute; z-index: -1; pointer-events: none; width: min(640px, 80vw); aspect-ratio: 1; right: -10%; top: 40%; background: radial-gradient(closest-side, rgba(255, 160, 70, 0.22), rgba(255, 122, 0, 0)); }
+
+.public-theme .content-card, .learning-accordion {
+  background: linear-gradient(145deg, rgba(248, 248, 248, 0.14), rgba(248, 248, 248, 0.05));
+  -webkit-backdrop-filter: blur(20px) saturate(150%); backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid var(--paper-14); color: var(--paper);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(248, 248, 248, 0.12);
+}
+.public-theme .content-card:hover { border-color: rgba(255, 122, 0, 0.55); box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(248, 248, 248, 0.16); }
+.public-theme .content-card h3 { color: var(--paper); }
+.public-theme .content-card p, .public-theme .content-meta { color: rgba(248, 248, 248, 0.72); }
+.public-theme .card-arrow { background: var(--paper-14); color: var(--paper); }
+.public-theme .content-card:hover .card-arrow { background: var(--accent); color: var(--ink); }
+.public-theme .rail-controls button { -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border: 1px solid var(--paper-14); background: rgba(248, 248, 248, 0.1); color: var(--paper); }
+
+.learning-accordion { max-width: 1000px; margin: auto; border-radius: 28px; overflow: hidden; }
+.learning-item + .learning-item { border-top: 1px solid var(--paper-14); }
+.learning-item h3 { margin: 0; font: inherit; }
+.learning-item button { display: grid; grid-template-columns: 70px 1fr 44px; align-items: center; gap: 24px; width: 100%; padding: 36px 40px; border: 0; background: transparent; color: inherit; font: inherit; font-size: 20px; font-weight: 650; text-align: left; cursor: pointer; transition: background-color .3s ease; }
+.learning-item:hover { background: rgba(248, 248, 248, 0.04); }
+/* No ring or hover band on just the header: hover, keyboard focus and the open state all highlight the whole row. */
+.learning-item button, .learning-item button:focus, .learning-item button:focus-visible { outline: none; }
+.learning-item { position: relative; transition: background-color .35s ease, box-shadow .35s ease; }
+.learning-item[data-open="true"] { background: rgba(248, 248, 248, 0.05); }
+.learning-item:has(button:focus-visible) { box-shadow: inset 0 0 0 2px rgba(255, 122, 0, 0.7); }
+.learning-item button { -webkit-tap-highlight-color: transparent; }
+.learning-accordion .learning-number { color: var(--paper); font-family: var(--font-heading); font-size: 32px; padding: 0; }
+.learning-toggle { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--paper-14); color: var(--paper); transition: background-color .35s ease, color .35s ease, transform .45s cubic-bezier(.2, .7, .2, 1); }
+.learning-item[data-open="true"] .learning-toggle { background: var(--accent); color: var(--ink); }
+.learning-bar { transform-origin: 12px 12px; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.learning-item[data-open="true"] .learning-bar { transform: scaleY(0); }
+/* Height animates 0fr -> 1fr; content fades and drifts in slightly behind it. */
+.learning-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s cubic-bezier(.2, .7, .2, 1); }
+.learning-item[data-open="true"] .learning-panel { grid-template-rows: 1fr; }
+.learning-panel-inner { overflow: hidden; min-height: 0; }
+.learning-panel p { margin: 0; padding: 0 108px 36px 134px; font-size: 17px; line-height: 1.6; color: rgba(248, 248, 248, 0.78); opacity: 0; transform: translateY(-8px); transition: opacity .35s ease, transform .45s cubic-bezier(.2, .7, .2, 1); }
+.learning-item[data-open="true"] .learning-panel p { opacity: 1; transform: none; transition-delay: .08s; }
+@media (max-width: 600px) { .learning-item button { grid-template-columns: 40px 1fr 36px; gap: 12px; padding: 24px 20px; font-size: 17px; } .learning-accordion .learning-number { font-size: 25px; } .learning-toggle { width: 36px; height: 36px; } .learning-panel p { padding: 0 24px 28px 72px; font-size: 16px; } }
+
+
+/* Full-bleed rail: cards run edge to edge of the screen, and the first card still lines up with the content column. */
+.public-theme .feature-section .card-rail { --rail-inset: max(var(--gutter), calc((100vw - var(--content)) / 2)); width: 100vw; margin-inline: calc(50% - 50vw); }
+.public-theme .feature-section .card-track { padding-inline: var(--rail-inset); scroll-padding-inline: var(--rail-inset); }
+.public-theme .feature-section .rail-controls { padding-inline: var(--rail-inset); }
+
+/* ============================================================ compact, refined sizing: cards + accordion */
+.public-theme .feature-section .card-track { grid-auto-columns: min(340px, 82vw); gap: 20px; padding-block: 10px 18px; }
+.public-theme .content-card { min-height: 440px; padding: 0 0 64px; border-radius: 24px; transition: transform .35s cubic-bezier(.2, .7, .2, 1), border-color .3s ease, box-shadow .3s ease; }
+.public-theme .content-card:hover { transform: translateY(-4px); }
+.public-theme .card-copy { padding: 22px 22px 18px; }
+.public-theme .content-meta { margin: 0 0 12px; font-size: 10px; letter-spacing: .12em; }
+.public-theme .content-card h3 { margin: 0 0 10px; font-size: clamp(20px, 1.6vw, 24px); line-height: 1.2; }
+.public-theme .content-card p { font-size: 14px; line-height: 1.55; }
+.public-theme .content-art { margin: auto 14px 0; height: 176px; border-radius: 16px; box-shadow: 0 0 0 1px var(--paper-14), 0 10px 24px rgba(0, 0, 0, 0.35); }
+.public-theme .content-art img { transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
+.public-theme .content-card:hover .content-art img { transform: scale(1.05); }
+.public-theme .card-arrow { right: 14px; bottom: 12px; width: 36px; height: 36px; }
+.public-theme .card-arrow svg { width: 18px; height: 18px; }
+.public-theme .rail-controls button { width: 36px; height: 36px; }
+
+.learning-accordion { max-width: 720px; border-radius: 22px; }
+.learning-item button { grid-template-columns: 48px 1fr 34px; gap: 16px; padding: 20px 26px; font-size: 16px; }
+.learning-accordion .learning-number { font-size: 22px; }
+.learning-toggle { width: 34px; height: 34px; }
+.learning-toggle svg { width: 18px; height: 18px; }
+.learning-panel p { padding: 0 74px 22px 90px; font-size: 15px; line-height: 1.6; }
+.public-theme .learning-section { padding-top: 56px; padding-bottom: 56px; }
+@media (max-width: 600px) { .learning-item button { grid-template-columns: 34px 1fr 30px; gap: 12px; padding: 16px 16px; font-size: 15px; } .learning-accordion .learning-number { font-size: 19px; } .learning-panel p { padding: 0 16px 18px 62px; font-size: 14px; } }

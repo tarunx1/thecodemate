@@ -26,7 +26,9 @@ class Settings:
 
 
 def build_settings() -> Settings:
-    environment = os.environ.get("TC_ENV", "development").strip()
+    environment = os.environ.get("TC_ENV", "").strip()
+    if not environment:
+        raise RuntimeError("TC_ENV is required: choose development, test, staging or production explicitly")
     if environment not in {"development", "test", "production", "staging"}:
         raise RuntimeError("Invalid TC_ENV")
     production_like = environment in {"production", "staging"}

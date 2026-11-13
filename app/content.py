@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field, field_validator
 from sqlalchemy import select
 from sqlalchemy.orm import Session, load_only
 from .models import AuditLog, ContentItem, ContentRevision, SiteSetting, utcnow
+from .copy import COPY
 
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ALLOWED_KINDS = {"topic", "project"}
@@ -19,19 +20,7 @@ REVISION_STATE_FIELDS = ("id", "title", "summary", "body", "steps", "category", 
 
 class ContentConflictError(ValueError):
     """The submitted editor snapshot no longer matches the current item."""
-SETTING_DEFAULTS = {
-    "eyebrow": "AN INDEPENDENT VISUAL TECH JOURNAL",
-    "headline": "Understand the complex. Build the next.",  # legacy editorial note, not used in hero
-    "hero_line1": "Ideas deserve",
-    "hero_line2": "to be",
-    "hero_highlight": "seen.",
-    "hero_description": "An evolving library of tech concepts explained visually, alongside the real projects we design and build.",
-    "instagram_url": "https://www.instagram.com/thecodemate/",
-    "footer_note": "Technology, made visual.",
-    "hero_effect": "liquid-metal",
-}
-# Developer-owned allowlist of homepage hero animations the owner can switch between.
-HERO_EFFECTS = {"liquid-metal"}
+SETTING_DEFAULTS = dict(COPY["defaults"])
 
 class ContentPayload(BaseModel):
     title: str = Field(min_length=2, max_length=120)
@@ -203,19 +192,11 @@ def site_settings(db: Session) -> dict[str,str]:
     for row in db.scalars(select(SiteSetting)):
         if row.key in result:
             result[row.key] = row.value
-    if result["hero_effect"] not in HERO_EFFECTS:  # e.g. a retired effect such as "aurora"
-        result["hero_effect"] = SETTING_DEFAULTS["hero_effect"]
     return result
 
 def update_settings(db: Session, values: dict, actor: int) -> None:
     for key in SETTING_DEFAULTS:
         value = str(values.get(key, "")).strip()
-        if key == "hero_effect":
-            if not value:  # older forms (e.g. the Jinja fallback) do not send it: keep the current choice
-                row = db.get(SiteSetting, key)
-                value = row.value if row and row.value in HERO_EFFECTS else SETTING_DEFAULTS[key]
-            if value not in HERO_EFFECTS:
-                raise ValueError("hero_effect: choose one of the available hero animations")
         limit = 500 if key == "hero_description" else (60 if key in {"hero_line1", "hero_line2", "hero_highlight"} else 220)
         if len(value) > limit:
             raise ValueError(f"{key}: text is too long")

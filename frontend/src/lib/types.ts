@@ -8,10 +8,8 @@ export type ItemSummary = { id: number; kind: Kind; slug: string; updated_at: st
   content: RevisionSummary | null; draft?: RevisionSummary | null; draft_revision_id?: number | null };
 export type Item = Omit<ItemSummary, 'content' | 'draft'> & { content: Revision | null;
   draft?: Revision | null; editor_state?: string };
-export type SiteSettings = { eyebrow: string; headline: string; hero_line1: string; hero_line2: string;
-  hero_highlight: string; hero_description: string; instagram_url: string; footer_note: string;
-  hero_effect: HeroEffect };
-export type HeroEffect = 'liquid-metal';
+export type SiteSettings = { eyebrow: string; hero_line1: string; hero_line2: string;
+  hero_highlight: string; hero_description: string; instagram_url: string; footer_note: string };
 export type ListResult = { items: ItemSummary[]; categories: string[]; q?: string; category?: string;
   total: number; page: number; page_size: number; has_next: boolean };
 export type DashboardData = { metrics: Record<string, number>; topics: ItemSummary[]; projects: ItemSummary[] };

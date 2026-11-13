@@ -2,10 +2,11 @@
 import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useState, type ReactNode } from 'react';
+import { COPY } from '@/lib/copy';
 
 /** Aceternity navbar-menu, adapted to semantic links, reduced motion and brand tokens. */
 export function Menu({ children }: { children: ReactNode }) {
-  return <nav className="aceternity-menu" aria-label="Main navigation">{children}</nav>;
+  return <nav className="aceternity-menu" aria-label={COPY.common.mainNavigation}>{children}</nav>;
 }
 
 export function MenuItem({ label, href, current, children }: { label: string; href: string; current?: boolean; children?: ReactNode }) {

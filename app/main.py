@@ -2,7 +2,7 @@
 
 Database tables are created by explicit Alembic migrations, never on app import.
 """
-from datetime import timedelta
+from datetime import datetime, timedelta
 from io import BytesIO
 from pathlib import Path
 from urllib.parse import quote
@@ -26,6 +26,7 @@ from sqlalchemy.orm import Session
 from starlette.templating import Jinja2Templates
 
 from .config import ROOT, get_settings
+from .copy import COPY
 from .content import (ContentConflictError, ContentPayload, assert_editor_state,
                       content_state_token, create_item, edit_item, get_revision, parse_steps,
                       public_items, publish_item, site_settings, unpublish_item, update_settings)
@@ -40,6 +41,8 @@ app = FastAPI(title="thecodemate", docs_url=None, redoc_url=None, openapi_url=No
 app.add_middleware(RequestBodyLimit)
 app.mount("/static", StaticFiles(directory=ROOT / "app" / "static"), name="static")
 templates = Jinja2Templates(directory=ROOT / "app" / "templates")
+templates.env.globals["copy"] = COPY
+templates.env.globals["copyright_year"] = datetime.now().year
 _markdown = mistune.create_markdown(escape=True)
 ALLOWED_TAGS = {"p", "h2", "h3", "h4", "strong", "em", "ul", "ol", "li", "blockquote", "a", "code", "pre", "hr"}
 
@@ -102,13 +105,13 @@ async def app_http_error(request: Request, exc: HTTPException):
     if exc.status_code == 401 and request.url.path.startswith("/admin") and request.method == "GET":
         return RedirectResponse("/admin/login", status_code=303)
     if request.url.path.startswith("/admin"):
-        return HTMLResponse(f"<h1>{exc.status_code}</h1><p>{html_escape(str(exc.detail))}</p><p><a href='/admin'>Back to dashboard</a></p>", status_code=exc.status_code)
+        return HTMLResponse(f"<h1>{exc.status_code}</h1><p>{html_escape(str(exc.detail))}</p><p><a href='/admin'>{COPY['legacy']['base']['backDashboard']}</a></p>", status_code=exc.status_code)
     return templates.TemplateResponse(request, "error.html", {"status": exc.status_code, "message": str(exc.detail), "site": {**{}}}, status_code=exc.status_code)
 
 def view(request: Request, name: str, db: Session, *, status_code: int = 200, **ctx):
     ctx.setdefault("site", site_settings(db))
-    ctx.setdefault("page_title", "thecodemate — Technology, made visual")
-    ctx.setdefault("description", "Understand technology through visual explainers and explore the projects behind thecodemate.")
+    ctx.setdefault("page_title", COPY["legacy"]["base"]["pageTitle"])
+    ctx.setdefault("description", COPY["legacy"]["base"]["description"])
     ctx.setdefault("canonical", settings.site_url + request.url.path)
     ctx.setdefault("indexable", settings.seo_indexing and not request.url.path.startswith("/admin"))
     ctx.setdefault("admin_session", get_session(db, request) if request.url.path.startswith("/admin") else None)
@@ -129,7 +132,7 @@ def topic_directory(request: Request, q: str = "", category: str = "", db: Sessi
     categories = sorted({rev.category for _, rev in all_topics})
     needle = q.strip().casefold()[:80]
     matches = [(item, rev) for item, rev in all_topics if (not needle or needle in (rev.title + " " + rev.summary + " " + rev.tags).casefold()) and (not category or category == rev.category)]
-    return view(request, "directory.html", db, entries=matches, kind="topic", categories=categories, q=q[:80], category=category, page_title="Explore topics — thecodemate", active="topics")
+    return view(request, "directory.html", db, entries=matches, kind="topic", categories=categories, q=q[:80], category=category, page_title=COPY["legacy"]["metadata"]["topicsTitle"], active="topics")
 
 @app.get("/projects", response_class=HTMLResponse)
 def project_directory(request: Request, q: str = "", category: str = "", db: Session = Depends(db_session)):
@@ -137,7 +140,7 @@ def project_directory(request: Request, q: str = "", category: str = "", db: Ses
     categories = sorted({rev.category for _, rev in all_projects})
     needle = q.strip().casefold()[:80]
     matches = [(item, rev) for item, rev in all_projects if (not needle or needle in (rev.title + " " + rev.summary + " " + rev.tags).casefold()) and (not category or category == rev.category)]
-    return view(request, "directory.html", db, entries=matches, kind="project", categories=categories, q=q[:80], category=category, page_title="Our projects — thecodemate", active="projects")
+    return view(request, "directory.html", db, entries=matches, kind="project", categories=categories, q=q[:80], category=category, page_title=COPY["legacy"]["metadata"]["projectsTitle"], active="projects")
 
 def detail(request: Request, db: Session, kind: str, slug: str):
     item = db.scalar(select(ContentItem).where(ContentItem.kind == kind, ContentItem.slug == slug))
@@ -146,7 +149,7 @@ def detail(request: Request, db: Session, kind: str, slug: str):
     rev = get_revision(db, item, draft=False)
     if rev is None or (rev.sample and not show_samples()):
         raise HTTPException(404, "That page isn't published")
-    return view(request, "detail.html", db, item=item, content=rev, kind=kind, preview=False, page_title=f"{rev.title} — thecodemate", description=rev.summary, active=kind+"s")
+    return view(request, "detail.html", db, item=item, content=rev, kind=kind, preview=False, page_title=rev.title + COPY["legacy"]["metadata"]["detailSuffix"], description=rev.summary, active=kind+"s")
 
 @app.get("/topics/{slug}", response_class=HTMLResponse)
 def topic_detail(request: Request, slug: str, db: Session = Depends(db_session)):
@@ -205,7 +208,7 @@ def admin_login_page(request: Request, db: Session = Depends(db_session)):
     if get_session(db, request):
         return RedirectResponse("/admin", status_code=303)
     token = secrets.token_urlsafe(24)
-    response = view(request, "login.html", db, login_csrf=token, page_title="Sign in — thecodemate", indexable=False)
+    response = view(request, "login.html", db, login_csrf=token, page_title=COPY["legacy"]["metadata"]["signInTitle"], indexable=False)
     response.set_cookie(LOGIN_CSRF_COOKIE, token, httponly=True, secure=settings.secure_cookie, samesite="lax", max_age=900)
     return response
 
@@ -249,14 +252,14 @@ async def admin_logout(request: Request, db: Session = Depends(db_session)):
 def admin_home(request: Request, db: Session = Depends(db_session)):
     require_admin(db, request)
     items = db.scalars(select(ContentItem).order_by(ContentItem.updated_at.desc())).all()
-    return view(request, "admin.html", db, items=items, drafts=sum(bool(i.draft_revision_id) for i in items), published=sum(bool(i.published_revision_id) for i in items), page_title="Dashboard — thecodemate", indexable=False)
+    return view(request, "admin.html", db, items=items, drafts=sum(bool(i.draft_revision_id) for i in items), published=sum(bool(i.published_revision_id) for i in items), page_title=COPY["legacy"]["metadata"]["dashboardTitle"], indexable=False)
 
 @app.get("/admin/new", response_class=HTMLResponse)
 def admin_new(request: Request, kind: str = "topic", db: Session = Depends(db_session)):
     require_admin(db, request)
     if kind not in {"topic", "project"}:
         raise HTTPException(400, "Invalid content type")
-    return view(request, "editor.html", db, item=None, content=None, form={}, kind=kind, error=None, page_title="New content — thecodemate", indexable=False)
+    return view(request, "editor.html", db, item=None, content=None, form={}, kind=kind, error=None, page_title=COPY["legacy"]["metadata"]["newContentTitle"], indexable=False)
 
 @app.get("/admin/edit/{item_id}", response_class=HTMLResponse)
 def admin_edit(request: Request, item_id: int, db: Session = Depends(db_session)):
@@ -266,7 +269,7 @@ def admin_edit(request: Request, item_id: int, db: Session = Depends(db_session)
         raise HTTPException(404, "Content not found")
     content = get_revision(db, item, draft=True) or get_revision(db, item, draft=False)
     return view(request, "editor.html", db, item=item, content=content, form={}, kind=item.kind,
-                editor_state=content_state_token(db, item), error=None, page_title=f"Edit {item.slug} — thecodemate", indexable=False)
+                editor_state=content_state_token(db, item), error=None, page_title=COPY["legacy"]["metadata"]["editPrefix"] + item.slug + COPY["legacy"]["metadata"]["detailSuffix"], indexable=False)
 
 async def process_media(file: UploadFile | None, db: Session, *, alt: str) -> int | None:
     if file is None or not file.filename:
@@ -389,12 +392,12 @@ def admin_preview(request: Request, item_id: int, db: Session = Depends(db_sessi
     rev = get_revision(db, item, draft=True) or get_revision(db, item, draft=False)
     if not rev:
         raise HTTPException(404, "No preview content")
-    return view(request, "detail.html", db, item=item, content=rev, kind=item.kind, preview=True, indexable=False, page_title=f"Preview: {rev.title}")
+    return view(request, "detail.html", db, item=item, content=rev, kind=item.kind, preview=True, indexable=False, page_title=COPY["legacy"]["metadata"]["previewPrefix"] + rev.title)
 
 @app.get("/admin/settings")
 def admin_settings(request: Request, db: Session = Depends(db_session)):
     require_admin(db, request)
-    return view(request, "settings.html", db, error=None, page_title="Site settings — thecodemate", indexable=False)
+    return view(request, "settings.html", db, error=None, page_title=COPY["legacy"]["metadata"]["settingsTitle"], indexable=False)
 
 @app.post("/admin/settings")
 async def admin_settings_save(request: Request, db: Session = Depends(db_session)):

@@ -116,7 +116,7 @@ def test_staging_uses_secure_session_cookies(monkeypatch):
 def test_settings_and_logout(signed_in):
     client = signed_in
     csrf = client.cookies["tc_admin_csrf"]
-    settings = {"eyebrow":"OUR VISUAL LAB", "headline":"A better headline", "hero_description":"We help people learn how the web works.", "hero_line1":"Ideas become", "hero_line2":"easy to", "hero_highlight":"understand.", "instagram_url":"https://www.instagram.com/thecodemate/", "footer_note":"Designed to make it click.", "csrf":csrf}
+    settings = {"eyebrow":"OUR VISUAL LAB", "hero_description":"We help people learn how the web works.", "hero_line1":"Ideas become", "hero_line2":"easy to", "hero_highlight":"understand.", "instagram_url":"https://www.instagram.com/thecodemate/", "footer_note":"Designed to make it click.", "csrf":csrf}
     assert client.post("/admin/settings", data=settings, follow_redirects=False).status_code == 303
     assert "OUR VISUAL LAB" in client.get("/").text
     assert "Ideas become" in client.get("/").text

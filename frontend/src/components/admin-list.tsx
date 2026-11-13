@@ -1,3 +1,4 @@
+import { COPY, formatCopy } from '@/lib/copy';
 import { ContentTable } from './admin-content';
 import { Button, ButtonLink, PageHeader, Pagination, SearchInput, Select } from './ui';
 import type { Kind, ListResult } from '@/lib/types';
@@ -13,18 +14,18 @@ export function AdminList({ kind, data, q, status, category }: { kind: Kind; dat
     return `/admin/${plural}${params.size ? `?${params}` : ''}`;
   };
   return <>
-    <PageHeader title={kind === 'topic' ? 'Topics' : 'Projects'} description={`Create, review, and publish ${plural}.`}
-      action={<ButtonLink href={`/admin/${plural}/new`}>+ New {kind === 'topic' ? 'Topic' : 'Project'}</ButtonLink>}/>
+    <PageHeader title={kind === 'topic' ? COPY.common.topics : COPY.common.projects} description={formatCopy(COPY.admin.list.description, { kind })}
+      action={<ButtonLink href={`/admin/${plural}/new`}>{kind === 'topic' ? COPY.admin.dashboard.newTopic : COPY.admin.dashboard.newProject}</ButtonLink>}/>
     <form className="admin-filters" action={`/admin/${plural}`}>
-      <SearchInput name="q" aria-label={`Search ${plural}`} placeholder={`Search ${plural}…`} defaultValue={q}/>
-      <Select name="status" aria-label="Filter by status" defaultValue={status}>
-        <option value="">All statuses</option><option value="published">Published</option>
-        <option value="draft">Draft</option><option value="offline">Offline</option>
+      <SearchInput name="q" aria-label={formatCopy(COPY.admin.list.search, { kind: plural })} placeholder={formatCopy(COPY.admin.list.searchPlaceholder, { kind: plural })} defaultValue={q}/>
+      <Select name="status" aria-label={COPY.admin.list.filterStatus} defaultValue={status}>
+        <option value="">{COPY.admin.list.allStatuses}</option><option value="published">{COPY.common.published}</option>
+        <option value="draft">{COPY.common.draft}</option><option value="offline">{COPY.common.offline}</option>
       </Select>
-      <Select name="category" aria-label="Filter by category" defaultValue={category}>
-        <option value="">All categories</option>{data.categories.map(c => <option key={c} value={c}>{c}</option>)}
+      <Select name="category" aria-label={COPY.admin.list.filterCategory} defaultValue={category}>
+        <option value="">{COPY.common.allCategories}</option>{data.categories.map(c => <option key={c} value={c}>{c}</option>)}
       </Select>
-      <Button type="submit">Filter</Button>
+      <Button type="submit">{COPY.admin.list.filter}</Button>
     </form>
     <ContentTable items={data.items}/>
     <Pagination page={data.page} total={data.total} pageSize={data.page_size} href={pageHref}/>

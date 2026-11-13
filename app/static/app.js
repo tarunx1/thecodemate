@@ -2,12 +2,12 @@
   const toggle = document.querySelector('[data-nav-toggle]');
   const nav = document.getElementById('main-navigation');
   if (toggle && nav) {
-    const close = () => { nav.classList.remove('is-open'); toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open navigation'); };
+    const close = () => { nav.classList.remove('is-open'); toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', toggle.dataset.openLabel); };
     toggle.addEventListener('click', () => {
       const open = !nav.classList.contains('is-open');
       nav.classList.toggle('is-open', open);
       toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      toggle.setAttribute('aria-label', open ? toggle.dataset.closeLabel : toggle.dataset.openLabel);
       if (open) nav.querySelector('a')?.focus();
     });
     nav.querySelectorAll('a').forEach(link => link.addEventListener('click', close));

@@ -1,2 +1,2 @@
 {% extends 'base.html' %}
-{% block content %}<section class="error-state container"><div class="section-kicker">PAGE NOT FOUND / {{ status }}</div><h1>{{ status }}<span>.</span></h1><p>{{ message }}</p><a class="button button-primary" href="/">Return home ↗</a></section>{% endblock %}
+{% block content %}<section class="error-state container"><div class="section-kicker">{{ copy.legacy.error.pageNotFoundPrefix }} {{ status }}</div><h1>{{ status }}<span>.</span></h1><p>{{ message }}</p><a class="button button-primary" href="/">{{ copy.legacy.error.returnHome }}</a></section>{% endblock %}

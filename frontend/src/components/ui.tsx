@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Search } from 'lucide-react';
 import type { ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
+import { COPY, formatCopy } from '@/lib/copy';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'quiet' | 'ghost';
 export function Button({ variant = 'primary', className = '', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: ButtonVariant }) {
@@ -27,12 +28,12 @@ export function ErrorState({ message }: { message: string }) { return <div class
 export function Pagination({ page, total, pageSize, href }: { page: number; total: number; pageSize: number; href: (page: number) => string }) {
   const pages = Math.max(1, Math.ceil(total / pageSize));
   if (pages < 2) return null;
-  return <nav className="pagination" aria-label="Pagination">
-    {page > 1 ? <Link href={href(page - 1)}>← Previous</Link> : <span aria-disabled="true">← Previous</span>}
-    <span>Page {page} of {pages}</span>
-    {page < pages ? <Link href={href(page + 1)}>Next →</Link> : <span aria-disabled="true">Next →</span>}
+  return <nav className="pagination" aria-label={COPY.common.pagination}>
+    {page > 1 ? <Link href={href(page - 1)}>{COPY.common.previous}</Link> : <span aria-disabled="true">{COPY.common.previous}</span>}
+    <span>{formatCopy(COPY.common.pageOf, { page, pages })}</span>
+    {page < pages ? <Link href={href(page + 1)}>{COPY.common.next}</Link> : <span aria-disabled="true">{COPY.common.next}</span>}
   </nav>;
 }
 export function Status({ item }: { item: { published: boolean; draft?: unknown } }) {
-  return <span className={`status ${item.published ? 'status-live' : ''}`}>{item.published && item.draft ? 'Published + draft' : item.published ? 'Published' : item.draft ? 'Draft' : 'Offline'}</span>;
+  return <span className={`status ${item.published ? 'status-live' : ''}`}>{item.published && item.draft ? COPY.common.publishedDraft : item.published ? COPY.common.published : item.draft ? COPY.common.draft : COPY.common.offline}</span>;
 }

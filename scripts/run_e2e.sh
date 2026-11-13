@@ -14,12 +14,14 @@ for port in 8011 3011; do
 done
 
 scratch="$(mktemp -d "${TMPDIR:-/tmp}/thecodemate-e2e.XXXXXX")"
+cp "$root/frontend/next-env.d.ts" "$scratch/next-env.d.ts"
 backend_pid=''
 frontend_pid=''
 cleanup() {
   [[ -z "$frontend_pid" ]] || kill "$frontend_pid" 2>/dev/null || true
   [[ -z "$backend_pid" ]] || kill "$backend_pid" 2>/dev/null || true
   wait "$frontend_pid" "$backend_pid" 2>/dev/null || true
+  cp "$scratch/next-env.d.ts" "$root/frontend/next-env.d.ts"
   rm -rf "$scratch"
 }
 trap cleanup EXIT INT TERM
@@ -36,6 +38,10 @@ export E2E_BASE_URL="$TC_SITE_URL"
 export E2E_ADMIN_EMAIL="$TC_ADMIN_EMAIL"
 export E2E_ADMIN_PASSWORD="$TC_ADMIN_PASSWORD"
 export E2E_DISPOSABLE=1
+
+# Next can reuse stale generated CSS after a source-only style change.
+# This directory is dedicated to this disposable test stack.
+rm -rf "$root/frontend/.next-e2e"
 
 cd "$root"
 "$root/.venv/bin/alembic" upgrade head > "$scratch/migration.log"

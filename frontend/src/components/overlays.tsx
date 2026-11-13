@@ -1,4 +1,6 @@
 'use client';
+import { COPY } from '@/lib/copy';
+
 /**
  * Shared Headless UI overlays. One implementation for every modal surface:
  * - Drawer: public mobile navigation and the admin mobile sidebar.
@@ -23,14 +25,14 @@ export function Drawer({ open, onClose, title, side = 'left', tone = 'light', ch
     <DialogPanel className="drawer-panel">
       <div className="drawer-head">
         <DialogTitle className="drawer-title">{title}</DialogTitle>
-        <button type="button" className="icon-button" aria-label="Close navigation" onClick={onClose}><X size={20}/></button>
+        <button type="button" className="icon-button" aria-label={COPY.shared.closeNavigation} onClick={onClose}><X size={20}/></button>
       </div>
       {children}
     </DialogPanel>
   </Dialog>;
 }
 
-export function ConfirmDialog({ open, title, description, confirmLabel, cancelLabel = 'Cancel', tone = 'primary', busy = false, onConfirm, onClose }: {
+export function ConfirmDialog({ open, title, description, confirmLabel, cancelLabel = COPY.shared.cancel, tone = 'primary', busy = false, onConfirm, onClose }: {
   open: boolean; title: string; description: string; confirmLabel: string; cancelLabel?: string;
   tone?: 'primary' | 'secondary'; busy?: boolean; onConfirm: () => void; onClose: () => void;
 }) {
@@ -43,7 +45,7 @@ export function ConfirmDialog({ open, title, description, confirmLabel, cancelLa
         <Description className="modal-description">{description}</Description>
         <div className="modal-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={busy}>{cancelLabel}</Button>
-          <Button type="button" variant={tone} onClick={onConfirm} disabled={busy} data-autofocus>{busy ? 'Working…' : confirmLabel}</Button>
+          <Button type="button" variant={tone} onClick={onConfirm} disabled={busy} data-autofocus>{busy ? COPY.shared.working : confirmLabel}</Button>
         </div>
       </DialogPanel>
     </div>

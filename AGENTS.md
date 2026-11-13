@@ -25,4 +25,6 @@ The source skill is a **reference**, not executable app code. Do not copy Visa H
 - Routes: Next.js owns `/`, `/topics`, `/topics/{slug}`, `/projects`, `/projects/{slug}`, `/admin` and its editor/auth/media/settings routes. Next rewrites `/api/*` and `/media/*` to private FastAPI.
 - Admin: single trusted owner, opaque hashed sessions, Argon2 password hashes, session CSRF; no public signup.
 - Settings: immediate public edits, disclosed in admin UI; content drafts remain isolated.
+- Copy: developer-owned active Next UI text, retained Jinja fallback copy, and the seven default site settings are maintained in `frontend/src/lib/site-copy.json`; CMS-authored text remains database-owned. Keep both consumers (`frontend/src/lib/copy.ts` and `app/copy.py`) aligned.
+- Runtime: set `TC_ENV` explicitly for every backend process; missing mode fails startup.
 - Scope: local runnable first version; no production deployment has been authorized or verified.
