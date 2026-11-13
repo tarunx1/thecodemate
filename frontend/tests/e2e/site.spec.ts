@@ -105,8 +105,9 @@ test.describe('public pages', () => {
       await expect.poll(() => card.locator('.content-art img').evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
       await expect(card).toHaveCSS('border-top-width', '0px');
       await expect(card.locator('.card-copy')).toHaveCSS('border-top-width', '0px');
-      await expect(card).toHaveCSS('background-color', 'rgb(248, 248, 248)');
-      await expect(card.locator('.card-copy h3')).toHaveCSS('color', 'rgb(11, 11, 11)');
+      // Frosted-glass card: translucent gradient with blur and light text (project skill §8).
+      await expect(card).toHaveCSS('backdrop-filter', /blur\(20px\)/);
+      await expect(card.locator('.card-copy h3')).toHaveCSS('color', 'rgb(248, 248, 248)');
       await expect(card.locator('.card-copy h3')).toBeVisible();
     }
     expect(await page.evaluate(() => getComputedStyle(document.querySelector('.public-theme')!).backgroundColor)).toBe('rgb(11, 11, 11)');

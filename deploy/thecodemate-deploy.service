@@ -1,0 +1,15 @@
+[Unit]
+Description=Deploy the newest checked commit of thecodemate
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=thecodemate
+Group=thecodemate
+Environment=HOME=/var/www/thecodemate
+ExecStart=/usr/local/sbin/thecodemate-deploy
+# Keep builds from starving the other sites on this server.
+Nice=10
+MemoryMax=3G
+TimeoutStartSec=20min

@@ -1,0 +1,20 @@
+[Unit]
+Description=thecodemate Next.js frontend
+After=network.target thecodemate-backend.service
+
+[Service]
+User=thecodemate
+Group=thecodemate
+WorkingDirectory=/var/www/thecodemate/current/frontend
+EnvironmentFile=/etc/thecodemate/env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/npm run start
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
