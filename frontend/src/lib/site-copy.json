@@ -139,6 +139,13 @@
       "title": "Content is temporarily unavailable.",
       "description": "The service could not load this page. Please try again.",
       "home": "The content service is unavailable. Please try again later."
+    },
+    "footer": {
+      "headlineFirst": "Technology,",
+      "headlineSecond": "made",
+      "headlineAccent": "visual.",
+      "followInstagram": "Follow on Instagram",
+      "backToTop": "Back to top"
     }
   },
   "admin": {

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element -- Private CMS media requires direct, noncached delivery under the nonce CSP. */
 import Link from 'next/link';
-import { ArrowRight, Instagram } from 'lucide-react';
+import { ArrowRight, ArrowUp, ArrowUpRight, Instagram } from 'lucide-react';
 import type { Item, ItemSummary, Revision, SiteSettings } from '@/lib/types';
 import { Badge, ButtonLink, EmptyState } from './ui';
 import { SiteHeader } from './site-header';
@@ -11,7 +11,23 @@ import { Visualization } from './visualizations';
 import { apiGet } from '@/lib/api';
 import { COPY, formatCopy } from '@/lib/copy';
 
-export function SiteFooter({ settings }: { settings?: SiteSettings }) { return <footer className="site-footer"><div className="container footer-line"><div><Link className="wordmark" href="/">{COPY.brand.name}<span>.</span></Link><p>{settings?.footer_note || COPY.brand.tagline}</p></div><nav aria-label={COPY.public.footerNavigation}><Link href="/topics">{COPY.common.topics}</Link><Link href="/projects">{COPY.common.projects}</Link><a href={settings?.instagram_url || COPY.defaults.instagram_url} target="_blank" rel="noopener noreferrer">{COPY.public.instagram}</a></nav></div><div className="container copyright">{formatCopy(COPY.common.copyright, { year: new Date().getFullYear() })}</div></footer>; }
+const FOOTER_LINKS = [{ href: '/topics', label: COPY.common.topics }, { href: '/projects', label: COPY.common.projects }, { href: '/#about', label: COPY.public.about }];
+/** Static full-width dark footer: statement with Instagram action, a ruled link grid, and a legal bar. */
+export function SiteFooter({ settings }: { settings?: SiteSettings }) {
+  const instagram = settings?.instagram_url || COPY.defaults.instagram_url;
+  const note = settings?.footer_note?.trim();
+  const footer = COPY.public.footer;
+  return <footer className="site-footer">
+    <div className="footer-hero">
+      <div><p className="footer-headline"><span>{footer.headlineFirst}</span> <span>{footer.headlineSecond} <em>{footer.headlineAccent}</em></span></p>{note && note.toLowerCase() !== COPY.brand.tagline.toLowerCase() && <p className="footer-note">{note}</p>}</div>
+      <a className="footer-social" href={instagram} target="_blank" rel="noopener noreferrer"><Instagram size={18} aria-hidden="true"/>{footer.followInstagram}<ArrowUpRight size={16} aria-hidden="true"/></a>
+    </div>
+    <nav className="footer-grid" aria-label={COPY.public.footerNavigation}>
+      {FOOTER_LINKS.map((link, index) => <Link key={link.href} href={link.href}><span className="footer-index">0{index + 1}</span><span className="footer-link-label">{link.label}</span><ArrowRight size={18} aria-hidden="true"/></Link>)}
+    </nav>
+    <div className="copyright"><span className="footer-legal"><Link className="wordmark" href="/">{COPY.brand.name}<span>.</span></Link><span>{formatCopy(COPY.common.copyright, { year: new Date().getFullYear() })}</span></span><a href="#main">{footer.backToTop}<span className="footer-top-icon"><ArrowUp size={15} aria-hidden="true"/></span></a></div>
+  </footer>;
+}
 /** Dark editorial shell. `overHero` floats the header over the first-screen hero. */
 export async function PublicLayout({ children, settings, overHero = false }: { children: React.ReactNode; settings?: SiteSettings; overHero?: boolean }) { const site = settings || await apiGet<SiteSettings>('public/settings') || undefined; return <div className="public-theme"><ScrollReveal/><a className="skip-link" href="#main">{COPY.public.skip}</a><SiteHeader variant={overHero ? 'overlay' : 'light'}/>{children}<SiteFooter settings={site}/></div>; }
 export function ContentCard({ item }: { item: ItemSummary }) {
