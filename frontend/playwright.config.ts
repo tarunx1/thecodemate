@@ -9,6 +9,8 @@ export default defineConfig({
   timeout: 45_000,
   fullyParallel: false,
   workers: 1,
+  // Shared CI runners render WebGL in software and are several times slower; retry there only.
+  retries: process.env.CI ? 2 : 0,
   reporter: [['list']],
   use: { baseURL: process.env.E2E_BASE_URL, trace: 'off' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],

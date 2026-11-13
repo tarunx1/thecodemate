@@ -76,10 +76,11 @@ test.describe('liquid hero', () => {
     await page.goto('/');
     const hero = page.locator('.liquid-hero');
     await expect(hero).toHaveAttribute('data-liquid-state', 'running');
-    await page.locator('#about').scrollIntoViewIfNeeded();
-    await expect(hero).toHaveAttribute('data-liquid-state', 'paused');
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await expect(hero).toHaveAttribute('data-liquid-state', 'running');
+    // Scroll instantly and re-apply it while polling: on slow runners a single smooth scroll
+    // on this long page did not always move the hero offscreen within the default timeout.
+    const scrollTo = (top: number) => page.evaluate(y => window.scrollTo({ top: y < 0 ? document.documentElement.scrollHeight : y, behavior: 'instant' }), top);
+    await expect(async () => { await scrollTo(-1); await expect(hero).toHaveAttribute('data-liquid-state', 'paused', { timeout: 2000 }); }).toPass({ timeout: 20_000 });
+    await expect(async () => { await scrollTo(0); await expect(hero).toHaveAttribute('data-liquid-state', 'running', { timeout: 2000 }); }).toPass({ timeout: 20_000 });
   });
 
   test('decorative liquid is hidden from assistive technology', async ({ page }) => {
