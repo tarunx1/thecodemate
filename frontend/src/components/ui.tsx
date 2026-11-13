@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Search } from 'lucide-react';
-import type { ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, ComponentPropsWithRef, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
 import { COPY, formatCopy } from '@/lib/copy';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'quiet' | 'ghost';
@@ -15,7 +15,7 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
 }
 export function Input(props: InputHTMLAttributes<HTMLInputElement>) { return <input className="input" {...props} />; }
 /** Search field with a decorative icon; still a native input inside a GET form. */
-export function SearchInput(props: InputHTMLAttributes<HTMLInputElement>) { return <span className="search-input"><Search size={16} aria-hidden="true"/><input className="input" type="search" {...props} /></span>; }
+export function SearchInput(props: ComponentPropsWithRef<'input'>) { return <span className="search-input"><Search size={16} aria-hidden="true"/><input className="input" type="search" {...props} /></span>; }
 export function Badge({ children, tone = 'neutral', className = '' }: { children: ReactNode; tone?: 'neutral' | 'accent'; className?: string }) { return <span className={`badge badge-${tone} ${className}`}>{children}</span>; }
 export function Textarea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) { return <textarea className="input textarea" {...props} />; }
 export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) { return <select className="input" {...props} />; }

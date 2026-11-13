@@ -314,3 +314,29 @@ test('featured cards stay in one row and learning accordion works', async ({ pag
   await expect(items.nth(1)).toHaveAttribute('data-open', 'false');
   expect(await rail.evaluate(node => node.getAnimations({ subtree: true }).length)).toBe(0);
 });
+
+for (const width of [390, 1440]) {
+  test(`Spotlight search expands and filters at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/topics');
+    const search = page.getByRole('search');
+    const input = search.getByRole('searchbox');
+    const apply = search.getByRole('button', { name: 'Apply filters' });
+    await expect(apply).toBeHidden();
+    await input.click();
+    await expect(apply).toBeVisible();
+    await search.getByRole('combobox').selectOption('Networking');
+    await input.fill('DNS');
+    await apply.click();
+    await expect(page).toHaveURL(url => url.searchParams.get('q') === 'DNS' && url.searchParams.get('category') === 'Networking');
+    await expect(page.locator('.content-card')).toHaveCount(1);
+    await expect(page.locator('.content-card')).toContainText('DNS');
+    await page.getByRole('searchbox').click();
+    await expect(page.getByRole('combobox')).toHaveValue('Networking');
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('searchbox')).toBeFocused();
+    await expect(page.getByRole('button', { name: 'Apply filters' })).toBeHidden();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  });
+}

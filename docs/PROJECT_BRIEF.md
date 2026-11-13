@@ -37,3 +37,5 @@ All ten source HTML templates were audited; the remaining composed directory/det
 2026-11-13: Shared public topic/project cards now use the owner-supplied Apple Store reference: rounded paper surfaces, top-aligned ink copy, large lower images, circular arrows and a responsive three/two/one-column grid on the existing black page background.
 
 2026-11-13 follow-up: Featured cards now stay in one horizontal scroll rail with equal heights and navigation controls. Directories retain their responsive grid. Learning uses a centered numbered accordion; shared public viewport reveals rise from below and respect reduced motion.
+
+2026-11-13: Topic/project search now uses a shared Spotlight-style glass capsule with an inline expanding category picker and Apply filters. Existing GET filtering and CMS categories are preserved; keyboard, reduced-motion and no-JavaScript behavior are supported.

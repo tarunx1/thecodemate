@@ -1,5 +1,6 @@
+import { SpotlightSearch } from './spotlight-search';
 import { ContentCard, PublicLayout } from './public';
-import { EmptyState, SearchInput, Select, Button, Pagination } from './ui';
+import { EmptyState, Pagination } from './ui';
 import type { ListResult } from '@/lib/types';
 import { COPY, formatCopy } from '@/lib/copy';
 
@@ -17,14 +18,7 @@ export function Directory({ kind, data }: { kind: 'topics' | 'projects'; data: L
       <h1>{kind === 'topics' ? COPY.public.directory.topicsTitle : COPY.public.directory.projectsTitle}</h1>
       <p>{kind === 'topics' ? COPY.public.directory.topicsDescription : COPY.public.directory.projectsDescription}</p>
     </div>
-    <form className="filters" action={`/${kind}`}>
-      <SearchInput name="q" aria-label={formatCopy(COPY.public.directory.search, { kind })} placeholder={formatCopy(COPY.public.directory.searchPlaceholder, { kind })} defaultValue={data.q || ''}/>
-      <Select name="category" aria-label={COPY.public.directory.filterCategory} defaultValue={data.category || ''}>
-        <option value="">{COPY.common.allCategories}</option>
-        {data.categories.map(c => <option key={c} value={c}>{c}</option>)}
-      </Select>
-      <Button type="submit">{COPY.public.directory.applyFilters}</Button>
-    </form>
+    <SpotlightSearch key={`${kind}:${data.q || ""}:${data.category || ""}`} kind={kind} categories={data.categories} query={data.q} category={data.category}/>
     <p className="result-count">{formatCopy(COPY.public.directory.resultCount, { count: data.total, kind: data.total === 1 ? kind.slice(0, -1) : kind })}</p>
     {data.items.length ? <div className="content-grid directory-grid">{data.items.map(item => <ContentCard key={item.id} item={item}/>)}</div>
       : <EmptyState title={COPY.public.directory.noMatches} description={COPY.public.directory.noMatchesHelp}/>}

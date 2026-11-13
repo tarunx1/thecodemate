@@ -82,7 +82,7 @@ p { margin-top: 0; overflow-wrap: break-word; }
 
 /* ============================================================ public shell base layout */
 .public-theme { background: var(--paper); color: var(--ink); min-height: 100vh; overflow-x: clip; }
-.site-header { z-index: 30; width: min(var(--content), calc(100% - 2 * var(--gutter))); max-width: calc(100% - 2 * var(--gutter)); height: 76px; margin: var(--space-4) auto 0; border: 0; border-radius: 999px; backdrop-filter: blur(20px); box-shadow: 0 12px 32px var(--ink-12); }
+.site-header { z-index: 30; width: min(var(--content), calc(100% - 2 * var(--gutter))); max-width: calc(100% - 2 * var(--gutter)); height: 76px; margin: var(--space-4) auto 0; border: 0; border-radius: 999px; backdrop-filter: var(--navigation-blur); box-shadow: 0 12px 32px var(--ink-12); }
 .site-header-light { position: sticky; top: var(--space-4); background: var(--paper-82); color: var(--ink); }
 .site-header-overlay { --focus: var(--accent); position: absolute; top: var(--space-4); left: 50%; margin: 0; transform: translateX(-50%); color: var(--paper); background: var(--ink-55); width: min(var(--content), calc(100% - 2 * var(--gutter))); max-width: calc(100% - 2 * var(--gutter)); }
 /* Orange actions keep a dark hairline so they never dissolve into an orange body behind them. */
@@ -465,7 +465,8 @@ td small { display: block; font-size: 12px; color: var(--surface-72); margin-top
 .public-theme .content-card, .learning-accordion {
   background: linear-gradient(145deg, rgba(248, 248, 248, 0.14), rgba(248, 248, 248, 0.05));
   -webkit-backdrop-filter: blur(20px) saturate(150%); backdrop-filter: blur(20px) saturate(150%);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(248, 248, 248, 0.12);
+  /* Inner highlight only: an outer drop shadow darkens the gaps between cards and is clipped by the scrolling track. */
+  box-shadow: inset 0 1px 0 rgba(248, 248, 248, 0.12);
   color: var(--paper);
 }
 .public-theme .content-card {
@@ -482,7 +483,7 @@ td small { display: block; font-size: 12px; color: var(--surface-72); margin-top
   border-top: 0;
 }
 .public-theme .learning-accordion { border: 1px solid var(--paper-14); }
-.public-theme .content-card:hover { border-color: transparent; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(248, 248, 248, 0.16); }
+.public-theme .content-card:hover { border-color: transparent; box-shadow: inset 0 1px 0 rgba(248, 248, 248, 0.16); }
 .public-theme .content-card h3 { color: var(--paper); }
 .public-theme .content-card p, .public-theme .content-meta { color: rgba(248, 248, 248, 0.72); }
 .public-theme .card-arrow { background: var(--paper-14); color: var(--paper); }
@@ -527,7 +528,7 @@ td small { display: block; font-size: 12px; color: var(--surface-72); margin-top
 .public-theme .content-meta { margin: 0 0 12px; font-size: 10px; letter-spacing: .12em; }
 .public-theme .content-card h3 { margin: 0 0 10px; font-size: clamp(20px, 1.6vw, 24px); line-height: 1.2; }
 .public-theme .content-card p { font-size: 14px; line-height: 1.55; }
-.public-theme .content-art { margin: auto 14px 0; height: 176px; border-radius: 16px; box-shadow: 0 0 0 1px var(--paper-14), 0 10px 24px rgba(0, 0, 0, 0.35); }
+.public-theme .content-art { margin: auto 14px 0; height: 176px; border-radius: 16px; box-shadow: 0 0 0 1px var(--paper-14); }
 .public-theme .content-art img { transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
 .public-theme .content-card:hover .content-art img { transform: scale(1.05); }
 .public-theme .card-arrow { right: 14px; bottom: 12px; width: 36px; height: 36px; }
@@ -655,3 +656,103 @@ td small { display: block; font-size: 12px; color: var(--surface-72); margin-top
   .ticker-row { flex-wrap: wrap; justify-content: center; row-gap: var(--space-3); }
   .button:hover svg:last-child, .text-link:hover svg { transform: none; }
 }
+
+/* Fixed-blur glass capsules; only geometry and content opacity animate. */
+.spotlight-search { position: relative; z-index: 20; margin: var(--space-8) 0 var(--space-5); display: flex; align-items: center; width: 100%; gap: 0; }
+.spotlight-bar { position: relative; flex: 0 1 620px; min-width: 0; display: flex; align-items: center; padding: 6px 14px 6px 12px; height: 72px; border-radius: 999px; }
+.spotlight-bar::before, .spotlight-control::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--surface-72); backdrop-filter: var(--navigation-blur); border: 1px solid var(--paper-14); box-shadow: inset 0 1px var(--paper-14), 0 12px 32px var(--ink-12); pointer-events: none; }
+.spotlight-bar .search-input { flex: 1; min-width: 0; }
+.public-theme .spotlight-bar .input { background: transparent; border: 0; border-radius: 999px; min-height: 58px; padding-left: 48px; font-size: clamp(19px, 2.3vw, 26px); box-shadow: none; }
+.spotlight-bar .search-input svg { width: 25px; height: 25px; left: 12px; }
+.spotlight-expansion { position: relative; flex: 0 1 0px; min-width: 0; visibility: hidden; transition: flex-basis .15s ease-out, visibility .15s; }
+.spotlight-search[data-open="true"] .spotlight-expansion { flex-basis: 440px; visibility: visible; transition: flex-basis .3s cubic-bezier(.22,1.15,.36,1) .2s, visibility 0s; }
+.spotlight-inner { display: flex; align-items: center; gap: 12px; min-width: 0; padding-left: 12px; }
+.spotlight-control { position: relative; height: 72px; border-radius: 999px; min-width: 0; opacity: 0; transform: translateX(-32px) scale(.7); transform-origin: left center; transition: transform .15s ease-out, opacity .15s ease-out; }
+.spotlight-category-control { flex: 1; }
+.spotlight-apply-control { flex: 1; }
+.spotlight-search[data-open="true"] .spotlight-control { opacity: 1; transform: translateX(0) scale(1); transition: transform .3s cubic-bezier(.22,1.55,.36,1) .2s, opacity .3s ease-out .2s; }
+.spotlight-search[data-open="true"] .spotlight-apply-control { transition-delay: .24s; }
+.spotlight-search[data-open="true"] .spotlight-control:hover { transform: none; transition-delay: 0s; }
+.spotlight-category-control:hover::before { background: var(--paper-14); }
+.spotlight-bar:focus-within, .spotlight-category-control:focus-within, .spotlight-apply-control:focus-within { box-shadow: inset 0 0 0 2px var(--paper-35); }
+.spotlight-bar .input:focus-visible, .spotlight-inner .input:focus-visible, .spotlight-inner .button:focus-visible { outline: none; }
+.public-theme .spotlight-inner .button:hover { transform: none; filter: brightness(1.08); }
+.public-theme .spotlight-inner .input, .public-theme .spotlight-inner .button { width: 100%; min-width: 0; height: 72px; border-radius: 999px; white-space: nowrap; }
+.public-theme .spotlight-inner .input { border: 0; background: transparent; color: var(--paper); }
+.public-theme .spotlight-inner .button-primary { background: var(--accent); color: var(--ink); }
+.spotlight-apply-control::before { display: none; }
+.public-theme .spotlight-inner option { background: var(--surface); color: var(--paper); }
+@media (max-width: 760px) {
+  .spotlight-search { flex-wrap: wrap; }
+  .spotlight-bar { flex-basis: 100%; height: 64px; padding-inline: 6px; }
+  .spotlight-expansion { height: 0; }
+  .spotlight-search[data-open="true"] .spotlight-expansion { flex-basis: 100%; height: auto; }
+  .spotlight-inner { padding: 12px 0 0; gap: 8px; }
+  .spotlight-inner .button { padding-inline: 16px; font-size: 14px; }
+  .spotlight-control, .public-theme .spotlight-inner .input, .public-theme .spotlight-inner .button { height: 64px; }
+  .public-theme .spotlight-inner select { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-search .spotlight-bar { animation: none; }
+  .spotlight-search .spotlight-expansion, .spotlight-search .spotlight-control, .spotlight-search[data-open="true"] .spotlight-expansion, .spotlight-search[data-open="true"] .spotlight-control { transition: none; }
+  .spotlight-search[data-open="true"] .spotlight-control:hover { transform: none; }
+}
+
+/* ============================================================ calmer public type scale (owner request, 2026-11-13)
+   One restrained scale instead of oversized display type: body 16px, intros 16px, section titles ≤40px,
+   page titles ≤52px, tighter section spacing and standard-size controls. Admin is untouched. */
+.public-theme { font-size: 16px; }
+.public-theme .wordmark { font-size: 20px; }
+.public-theme .mono-label, .public-theme .section-index, .public-theme .eyebrow { font-size: 11px; letter-spacing: .12em; }
+.public-theme .button { min-height: 42px; padding: 10px 18px; font-size: 14px; }
+.public-theme .aceternity-trigger { font-size: 14px; padding: 8px 14px; }
+.public-theme .site-header { height: 64px; }
+
+.public-theme .hero-title { font-size: clamp(32px, 3.6vw, 48px); letter-spacing: -0.025em; line-height: 1.1; }
+.public-theme .hero-description { font-size: 16px; }
+
+.public-theme .section-heading h2, .public-theme .learning-section h2, .public-theme .learning-intro h2,
+.public-theme .about-section h2, .public-theme .explore-cta h2, .public-theme .services-head h2 { font-size: clamp(26px, 2.8vw, 38px); line-height: 1.12; letter-spacing: -0.025em; }
+.public-theme .section-intro, .public-theme .learning-intro p, .public-theme .directory-head p,
+.public-theme .services-head p, .public-theme .about-copy > p { font-size: 16px; line-height: 1.65; }
+.public-theme .section-heading > a, .public-theme .text-link { font-size: 13px; }
+
+.public-theme .feature-section { padding-top: 64px; padding-bottom: 24px; }
+.public-theme .learning-section { padding-top: 48px; padding-bottom: 48px; }
+.public-theme .services-section { padding-top: 64px; padding-bottom: 48px; }
+.public-theme .about-section { margin-top: 32px; padding-top: 64px; padding-bottom: 64px; }
+.public-theme .explore-cta { margin-bottom: 64px; padding: clamp(24px, 4vw, 44px); }
+.public-theme .about-stats dd { font-size: 30px; }
+
+.public-theme .service-intro h3 { font-size: clamp(22px, 2.2vw, 28px); }
+.public-theme .service-intro p { font-size: 16px; }
+.public-theme .service-points li, .public-theme .services-subhead p, .public-theme .services-cta p { font-size: 15px; }
+.public-theme .services-subhead h3 { font-size: clamp(20px, 1.9vw, 24px); }
+.public-theme .services-process h4 { font-size: 17px; }
+.public-theme .services-process li p { font-size: 14px; }
+.public-theme .services-cta h3 { font-size: clamp(19px, 1.8vw, 22px); }
+.public-theme .services-index a { font-size: 15px; }
+.public-theme .service-step { font-size: 18px; }
+.public-theme .ticker-row span { font-size: clamp(15px, 1.4vw, 19px); }
+
+.public-theme .footer-headline { font-size: clamp(24px, 2.6vw, 34px); }
+.public-theme .footer-note, .public-theme .footer-social { font-size: 15px; }
+.public-theme .footer-social { min-height: 44px; padding: 0 20px; }
+.public-theme .footer-link-label { font-size: 17px; }
+
+.public-theme .directory { padding-top: 64px; padding-bottom: 64px; }
+.public-theme .directory-head h1, .public-theme .article-head h1, .public-theme .not-found h1 { font-size: clamp(32px, 4.2vw, 52px); letter-spacing: -0.03em; line-height: 1.08; }
+.public-theme .article-head p { font-size: clamp(16px, 1.3vw, 18px); }
+.public-theme .prose { font-size: 17px; line-height: 1.7; }
+.public-theme .prose h2, .public-theme .steps > h2 { font-size: clamp(22px, 2.2vw, 28px); }
+.public-theme .prose h3 { font-size: 20px; }
+.public-theme .step h3 { font-size: 18px; }
+.public-theme .not-found p { font-size: 16px; }
+
+/* Spotlight search: standard 52px capsules (were 72px) with body-size text. */
+.public-theme .spotlight-bar { flex-basis: 480px; height: 52px; padding: 4px 10px 4px 8px; }
+.public-theme .spotlight-bar .input { min-height: 44px; padding-left: 40px; font-size: 16px; }
+.public-theme .spotlight-control, .public-theme .spotlight-inner .input, .public-theme .spotlight-inner .button { height: 52px; }
+.public-theme .spotlight-inner .button, .public-theme .spotlight-inner select { font-size: 14px; }
+@media (max-width: 600px) { .public-theme .spotlight-bar, .public-theme .spotlight-control, .public-theme .spotlight-inner .input, .public-theme .spotlight-inner .button { height: 48px; } }
+

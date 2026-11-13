@@ -209,7 +209,9 @@
       "directoryLabel": "THECODEMATE / {kind}",
       "resultCount": "{count} {kind}",
       "topicsUnavailable": "Topics are temporarily unavailable.",
-      "projectsUnavailable": "Projects are temporarily unavailable."
+      "projectsUnavailable": "Projects are temporarily unavailable.",
+      "toggleFilters": "Show or hide search filters",
+      "searchHint": "Choose a category, then press Enter or apply filters."
     },
     "article": {
       "visualExplanation": "Visual explanation",
