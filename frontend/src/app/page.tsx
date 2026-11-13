@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { apiGet } from '@/lib/api';
+import { apiGet, siteOrigin } from '@/lib/api';
 import type { ItemSummary, SiteSettings } from '@/lib/types';
-import { FeaturedSection, InstagramCallout, PublicLayout } from '@/components/public';
+import { FeaturedSection, InstagramCallout, PublicLayout, ServicesSection, TitleTicker } from '@/components/public';
+import { CountUp } from '@/components/motion/effects';
 import { ButtonLink, ErrorState } from '@/components/ui';
 import { LearningAccordion } from '@/components/learning-accordion';
 import { LiquidAmbientHero } from '@/components/motion/LiquidAmbientHero';
@@ -32,6 +33,7 @@ export default async function Home() {
       </LiquidAmbientHero>
 
       <div className="editorial">
+        <TitleTicker items={[...data.topics, ...data.projects].map(item => item.content?.title).filter((title): title is string => Boolean(title))}/>
         <FeaturedSection index={copy.featuredTopicsIndex} title={copy.featuredTopicsTitle} intro={copy.featuredTopicsIntro} href="/topics" items={data.topics}/>
 
         <section className="learning-section container" aria-labelledby="learning-title">
@@ -45,6 +47,8 @@ export default async function Home() {
 
         <FeaturedSection index={copy.featuredProjectsIndex} title={copy.featuredProjectsTitle} intro={copy.featuredProjectsIntro} href="/projects" items={data.projects}/>
 
+        <ServicesSection instagramUrl={s.instagram_url} siteUrl={siteOrigin}/>
+
         <section className="about-section container" id="about" aria-labelledby="about-title">
           <div>
             <span className="section-index">{copy.aboutIndex}</span>
@@ -53,8 +57,8 @@ export default async function Home() {
           <div className="about-copy">
             <p>{copy.aboutBody}</p>
             <dl className="about-stats">
-              <div><dt>{copy.publishedTopics}</dt><dd>{data.topic_count}</dd></div>
-              <div><dt>{copy.publishedProjects}</dt><dd>{data.project_count}</dd></div>
+              <div><dt>{copy.publishedTopics}</dt><dd><CountUp value={data.topic_count}/></dd></div>
+              <div><dt>{copy.publishedProjects}</dt><dd><CountUp value={data.project_count}/></dd></div>
             </dl>
             <Link className="text-link" href="/topics">{copy.startExploring} <ArrowRight size={16} aria-hidden="true"/></Link>
           </div>

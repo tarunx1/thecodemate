@@ -11,6 +11,7 @@ import { COPY } from '@/lib/copy';
 const links = [
   { href: '/topics', label: COPY.common.topics },
   { href: '/projects', label: COPY.common.projects },
+  { href: '/#services', label: COPY.public.services },
   { href: '/#about', label: COPY.public.about },
 ];
 
@@ -25,6 +26,7 @@ export default function NavbarDemo({ variant = 'light' }: { variant?: 'overlay' 
       <div className="site-links"><Menu>
         <MenuItem label={COPY.common.topics} href="/topics" current={current('/topics')}><HoveredLink href="/topics">{COPY.public.exploreAllTopics} <ArrowRight size={15} aria-hidden="true"/></HoveredLink></MenuItem>
         <MenuItem label={COPY.common.projects} href="/projects" current={current('/projects')}><HoveredLink href="/projects">{COPY.public.viewAllProjects} <ArrowRight size={15} aria-hidden="true"/></HoveredLink></MenuItem>
+        <MenuItem label={COPY.public.services} href="/#services"/>
         <MenuItem label={COPY.public.about} href="/#about"/>
       </Menu></div>
       <ButtonLink href="/topics" className="site-cta">{COPY.public.exploreTopics} <ArrowRight size={16} aria-hidden="true"/></ButtonLink>

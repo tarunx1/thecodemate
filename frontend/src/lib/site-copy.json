@@ -3,7 +3,7 @@
     "name": "thecodemate",
     "handle": "@thecodemate",
     "tagline": "Technology, made visual.",
-    "description": "Visual technology explainers and selected projects from thecodemate.",
+    "description": "Visual technology explainers, selected projects, and website, SaaS and mobile app development from thecodemate.",
     "ogDescription": "Visual technology education and selected projects.",
     "wordmarkFirst": "thecode",
     "wordmarkSecond": "mate",
@@ -83,19 +83,115 @@
       "featuredProjectsIndex": "03 / Featured projects",
       "featuredProjectsTitle": "Work, opened up.",
       "featuredProjectsIntro": "Selected projects with the reasoning behind them.",
-      "aboutIndex": "04 / About thecodemate",
+      "aboutIndex": "05 / About thecodemate",
       "aboutFirst": "Technology,",
       "aboutSecond": "made visual.",
       "aboutBody": "thecodemate is a space for visual technology education and selected project work. Explore a concept, follow a process, or see what we build.",
       "publishedTopics": "Published topics",
       "publishedProjects": "Published projects",
       "startExploring": "Start exploring",
-      "exploreIndex": "05 / Explore more",
+      "exploreIndex": "06 / Explore more",
       "exploreFirst": "Keep exploring.",
       "exploreSecond": "One concept at a time.",
       "exploreBody": "Browse every explainer, look inside the projects, or follow short visual notes from @thecodemate.",
       "allTopics": "All topics",
-      "allProjects": "All projects"
+      "allProjects": "All projects",
+      "services": {
+        "index": "04 / Services",
+        "titleFirst": "Websites, SaaS and mobile apps.",
+        "titleSecond": "Designed and built end to end.",
+        "intro": "thecodemate designs and develops fast business websites, SaaS web applications and cross-platform mobile apps. The same team handles interface design, frontend, backend, database and deployment, so what you approve is what ships.",
+        "includes": "What is included",
+        "stack": "Tech stack",
+        "items": [
+          {
+            "name": "Website design and development",
+            "summary": "Business websites, portfolios and content-managed sites that load fast and are easy to find. Every page is server-rendered for search engines, designed mobile-first, and comes with an admin panel so you can publish without a developer.",
+            "points": [
+              "Custom interface design, no page-builder templates",
+              "Server-side rendering, clean metadata, sitemap and structured data",
+              "Content management with drafts, previews and image uploads",
+              "HTTPS hosting setup and automatic releases"
+            ],
+            "stack": [
+              "Next.js",
+              "React",
+              "TypeScript",
+              "Tailwind CSS",
+              "FastAPI",
+              "MySQL"
+            ],
+            "id": "websites",
+            "short": "Websites"
+          },
+          {
+            "name": "SaaS product development",
+            "summary": "Web applications with accounts, dashboards, roles and payments, from the first prototype to production. We design the data model and the API first, then build an interface your users can learn in minutes.",
+            "points": [
+              "Authentication, roles and secure sessions",
+              "Dashboards, reporting and admin tools",
+              "Documented REST APIs with validation and automated tests",
+              "Database design and versioned migrations"
+            ],
+            "stack": [
+              "React",
+              "Next.js",
+              "TypeScript",
+              "Python",
+              "FastAPI",
+              "Node.js",
+              "PostgreSQL",
+              "MySQL",
+              "MongoDB"
+            ],
+            "id": "saas",
+            "short": "SaaS products"
+          },
+          {
+            "name": "Mobile app development",
+            "summary": "Android and iOS apps from a single codebase, connected to the same backend as your website or SaaS product. We cover interface design, API integration, testing on real devices and release to the app stores.",
+            "points": [
+              "One codebase for Android and iOS",
+              "Native-feeling screens, navigation and gestures",
+              "Secure sign-in and API integration",
+              "Store listing and release support"
+            ],
+            "stack": [
+              "Flutter",
+              "Dart",
+              "Android",
+              "iOS",
+              "REST APIs"
+            ],
+            "id": "mobile-apps",
+            "short": "Mobile apps"
+          }
+        ],
+        "ctaTitle": "Have a product in mind?",
+        "ctaBody": "Send a short note about what you want to build and we will reply with the next steps.",
+        "ctaButton": "Message {handle}",
+        "processTitle": "How a project runs",
+        "process": [
+          {
+            "name": "Discover",
+            "text": "We map your goals, users and scope, and agree on what the first release includes."
+          },
+          {
+            "name": "Design",
+            "text": "Wireframes and a clickable interface design that you approve before any code is written."
+          },
+          {
+            "name": "Build",
+            "text": "Frontend, backend and database built in short cycles, with a preview link you can test."
+          },
+          {
+            "name": "Launch",
+            "text": "Deployment, domain and HTTPS setup, followed by fixes and improvements after release."
+          }
+        ],
+        "navLabel": "Services in this section",
+        "processIntro": "The same four steps for every website, SaaS product and mobile app."
+      }
     },
     "directory": {
       "topicsTitle": "Ideas worth understanding.",
@@ -146,7 +242,8 @@
       "headlineAccent": "visual.",
       "followInstagram": "Follow on Instagram",
       "backToTop": "Back to top"
-    }
+    },
+    "services": "Services"
   },
   "admin": {
     "navigation": "Admin sections",

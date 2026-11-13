@@ -7,7 +7,7 @@ export function ScrollReveal() {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (preference.matches) return;
     const animations = new Set<Animation>();
-    const elements = document.querySelectorAll<HTMLElement>('.public-theme .section-heading, .public-theme .learning-intro,.public-theme .about-section > div, .public-theme .explore-cta, .public-theme .site-footer, .public-theme .directory-head, .public-theme .filters, .public-theme .article-head, .public-theme .article-cover, .public-theme .article-body > *, .public-theme .hero-card');
+    const elements = document.querySelectorAll<HTMLElement>('.public-theme .section-heading, .public-theme .learning-intro,.public-theme .about-section > div, .public-theme .explore-cta, .public-theme .services-head, .public-theme .service-intro, .public-theme .service-panels, .public-theme .services-process, .public-theme .services-cta, .public-theme .site-footer, .public-theme .directory-head, .public-theme .filters, .public-theme .article-head, .public-theme .article-cover, .public-theme .article-body > :not(.steps), .public-theme .steps > h2, .public-theme .step');
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
       if (!entry.isIntersecting) return;
       const node = entry.target as HTMLElement;

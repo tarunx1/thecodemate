@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Brand palette copy (ink, paper, accent): an SVG file cannot read tokens.css. -->
+  <rect width="64" height="64" rx="15" fill="#0B0B0B"/>
+  <path fill="#F8F8F8" d="M19 12h10v10h11v9H29v9.5c0 2.6 1.4 3.9 4 3.9 1.9 0 3.900-.4 5.600-1.100v8.700c-2.400 1-5.200 1.500-8.400 1.500C22.800 52.500 19 48.700 19 41.900V31h-5v-9h5z"/>
+  <circle cx="48" cy="47" r="5.5" fill="#FF7A00"/>
+</svg>

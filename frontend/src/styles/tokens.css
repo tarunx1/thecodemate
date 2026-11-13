@@ -18,6 +18,7 @@
   --paper-35: rgba(248, 248, 248, 0.35);
   --paper-82: rgba(248, 248, 248, 0.82);
   --accent-12: rgba(255, 122, 0, 0.12);
+  --accent-28: rgba(255, 122, 0, 0.28);
   --line: rgba(189, 189, 189, 0.28);
 
   /* Typography (font variables are injected by next/font in app/layout.tsx) */
