@@ -57,7 +57,15 @@ fail() { log "FAILED: $*"; echo "$sha" > "$BASE/state/rejected"; rm -rf "$releas
 
 python3 -m venv "$release/.venv" || fail "venv"
 "$release/.venv/bin/pip" install --quiet --disable-pip-version-check -r "$release/requirements-lock.txt" || fail "pip install"
-( cd "$release/frontend" && npm ci --no-audit --no-fund --loglevel=error && npm run build ) || fail "frontend build"
+( cd "$release/frontend" && npm ci --no-audit --no-fund --loglevel=error ) || fail "npm install"
+# The build downloads the Google fonts; a brief network failure there must not reject the release.
+built=0
+for attempt in 1 2 3; do
+  if ( cd "$release/frontend" && npm run build ); then built=1; break; fi
+  log "frontend build attempt $attempt failed; retrying"
+  rm -rf "$release/frontend/.next"; sleep 20
+done
+[[ "$built" == 1 ]] || fail "frontend build"
 ( cd "$release" && .venv/bin/alembic upgrade head ) || fail "database migration"
 
 previous="$(readlink "$BASE/current" 2>/dev/null || true)"
