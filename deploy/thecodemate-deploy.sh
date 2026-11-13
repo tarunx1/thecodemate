@@ -64,7 +64,7 @@ previous="$(readlink "$BASE/current" 2>/dev/null || true)"
 switch_to() { ln -sfn "$1" "$BASE/current.next" && mv -T "$BASE/current.next" "$BASE/current"; sudo /usr/bin/systemctl restart thecodemate-backend thecodemate-frontend; }
 healthy() {
   for _ in $(seq 1 30); do
-    if curl -fsS -m 5 -o /dev/null "$SITE_LOCAL/api/public/settings" && curl -fsS -m 10 -o /dev/null "$SITE_LOCAL/"; then return 0; fi
+    if curl -fs -m 5 -o /dev/null "$SITE_LOCAL/api/public/settings" && curl -fs -m 10 -o /dev/null "$SITE_LOCAL/"; then return 0; fi
     sleep 2
   done
   return 1

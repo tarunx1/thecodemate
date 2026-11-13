@@ -27,4 +27,4 @@ The source skill is a **reference**, not executable app code. Do not copy Visa H
 - Settings: immediate public edits, disclosed in admin UI; content drafts remain isolated.
 - Copy: developer-owned active Next UI text, retained Jinja fallback copy, and the seven default site settings are maintained in `frontend/src/lib/site-copy.json`; CMS-authored text remains database-owned. Keep both consumers (`frontend/src/lib/copy.ts` and `app/copy.py`) aligned.
 - Runtime: set `TC_ENV` explicitly for every backend process; missing mode fails startup.
-- Scope: local runnable first version; no production deployment has been authorized or verified.
+- Scope: deployed to https://thecodemate.com on 2026-11-13 with the owner's authorization (record and limits in the project skill §15). Pushes to `main` go live automatically once GitHub checks pass; any other production change still needs explicit authorization.
