@@ -11,25 +11,36 @@ import { COPY } from '@/lib/copy';
  * Dialogs mount only while open: a closed Headless Dialog still server-renders a hidden
  * probe <span> with an inline style attribute, which the nonce CSP (style-src) blocks.
  */
-import { Dialog, DialogPanel, DialogTitle, Description } from '@headlessui/react';
+import { Dialog, DialogPanel, DialogTitle, Description, Transition, TransitionChild } from '@headlessui/react';
 import { X } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { Button } from './ui';
 
+/**
+ * Slide-in drawer with a blurred, theme-tinted backdrop. Transition keeps the dialog mounted
+ * until the close animation ends, then unmounts it, so a closed drawer renders nothing.
+ * Animation state comes from Headless UI's data-closed attribute (no inline styles, CSP-safe);
+ * timing and tints live in globals.css (.drawer-*).
+ */
 export function Drawer({ open, onClose, title, side = 'left', tone = 'light', children }: {
   open: boolean; onClose: () => void; title: string; side?: 'left' | 'right'; tone?: 'light' | 'dark'; children: ReactNode;
 }) {
-  if (!open) return null;
-  return <Dialog open onClose={onClose} className={`overlay drawer drawer-${side} overlay-${tone}`}>
-    <div className="overlay-backdrop" aria-hidden="true"/>
-    <DialogPanel className="drawer-panel">
-      <div className="drawer-head">
-        <DialogTitle className="drawer-title">{title}</DialogTitle>
-        <button type="button" className="icon-button" aria-label={COPY.shared.closeNavigation} onClick={onClose}><X size={20}/></button>
-      </div>
-      {children}
-    </DialogPanel>
-  </Dialog>;
+  return <Transition show={open}>
+    <Dialog onClose={onClose} className={`overlay drawer drawer-${side} overlay-${tone}`}>
+      <TransitionChild as={Fragment}>
+        <div className="overlay-backdrop drawer-backdrop" aria-hidden="true"/>
+      </TransitionChild>
+      <TransitionChild as={Fragment}>
+        <DialogPanel className="drawer-panel">
+          <div className="drawer-head">
+            <DialogTitle className="drawer-title">{title}</DialogTitle>
+            <button type="button" className="icon-button" aria-label={COPY.shared.closeNavigation} onClick={onClose}><X size={20}/></button>
+          </div>
+          {children}
+        </DialogPanel>
+      </TransitionChild>
+    </Dialog>
+  </Transition>;
 }
 
 export function ConfirmDialog({ open, title, description, confirmLabel, cancelLabel = COPY.shared.cancel, tone = 'primary', busy = false, onConfirm, onClose }: {

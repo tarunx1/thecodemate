@@ -144,6 +144,10 @@ test.describe('public pages', () => {
     await trigger.click();
     const dialog = page.getByRole('dialog', { name: 'Menu' });
     await expect(dialog).toBeVisible();
+    // Frosted panel and slide animation are declared (blur + transform transition).
+    const panel = dialog.locator('.drawer-panel');
+    expect(await panel.evaluate(el => getComputedStyle(el).backdropFilter)).not.toBe('none');
+    expect(await panel.evaluate(el => getComputedStyle(el).transitionProperty)).toContain('transform');
     await page.keyboard.press('Tab');
     expect(await page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]'))).toBe(true);
     await page.keyboard.press('Escape');
